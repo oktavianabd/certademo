@@ -19,7 +19,7 @@ task:
   nomadjob_restart:
     action: core.local
     input:
-      cmd: cmd="nomad job restart -address=http://10.63.20.226:4646 -namespace=app -on-error=fail statping"
+      cmd: nomad job restart -address=http://10.63.20.226:4646 -namespace=app -on-error=fail statping
     next:
       - when: <% failed() %>
         do: failure
