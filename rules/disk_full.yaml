@@ -18,15 +18,15 @@ criteria:
     type: "equals"
 
 action:
-  ref: "chatops.post_message"
+  ref: "chatops.disk_full"
   parameters:
-    channel: "stackstorm-demo"
-    message: |
-      status: {{trigger.body.alerts[0].status}}
-      severity: {{trigger.body.alerts[0].labels.severity}}
-      hostip: {{trigger.body.alerts[0].labels.instance}}
-      hostname: {{trigger.body.alerts[0].labels.nodename}}
-      startsAt: {{trigger.body.alerts[0].startsAt}}
-      endsAt: {{trigger.body.alerts[0].endsAt}}
-      description: {{trigger.body.alerts[0].annotations.description}}
-      summary: {{trigger.body.alerts[0].annotations.summary}}
+    hostip: "{{trigger.body.alerts[0].labels.instance}}"
+    # message: |
+    #   status: {{trigger.body.alerts[0].status}}
+    #   severity: {{trigger.body.alerts[0].labels.severity}}
+    #   hostip: {{trigger.body.alerts[0].labels.instance}}
+    #   hostname: {{trigger.body.alerts[0].labels.nodename}}
+    #   startsAt: {{trigger.body.alerts[0].startsAt}}
+    #   endsAt: {{trigger.body.alerts[0].endsAt}}
+    #   description: {{trigger.body.alerts[0].annotations.description}}
+    #   summary: {{trigger.body.alerts[0].annotations.summary}}
