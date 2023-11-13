@@ -1,0 +1,44 @@
+---
+version: '1.0'
+name: test_webhook
+description: test webhook workflow for demo purpose
+
+input:
+  - body
+
+tasks:
+  task1:
+    action: core.local
+    input: 
+      cmd: echo $(date) Hello <% ctx().body %>, task1 complete >> /home/stanley/test_webhook.txt
+    next:
+      - when: <% succeeded() %>
+        do: task2
+  task2:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/test_ansible_access.yaml
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stdout: <% result().stdout %>
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: success
+        publish: 
+          - stdout: <% result().stdout %>
+          - stderr: <% result().stderr %>
+  failure:
+    # action: chatops.post_message channel="stackstorm-demo" message="run ansible playbook failure, task2 not complete, please check the playbook file"
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %><% ctx().stdout %>
+        Summary: Run ansible playbook failure, task2 not complete, please check the playbook file
+        Thank you
+  
+  success:
+    action: chatops.post_message channel="stackstorm-demo" message="Summary:Great! Run asible playbook successful, task2 complete"
+    # action: chatops.post_message channel="stackstorm-demo" message="<% ctx().stdout %> run asible playbook successful, task2 complete"

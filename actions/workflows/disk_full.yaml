@@ -1,0 +1,55 @@
+---
+version: 1.0
+name: disk_full
+description: handle when host out of disk space
+
+input:
+  - hostip
+
+tasks:
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Summary: Disk on <% ctx().hostip %> is out of disk space
+        Will try to remove files big*.log on /var/log/
+    next:
+      - when: <% succeeded %>
+        do: remove_logs
+  
+  remove_logs:
+    action: linux.rm
+    input:
+      hosts: <% ctx().hostip %>
+      target: /var/log/big*.log
+      sudo: "true"
+    
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stdout: <% result().stdout %>
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: success
+        publish:
+          - stdout: <% result().stdout %>
+          - stderr: <% result().stderr %>
+
+  failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %><% ctx().stdout %>
+        Summary: Remove logs failed
+
+  success:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %><% ctx().stdout %>
+        Summary: Remove logs successful  
+      

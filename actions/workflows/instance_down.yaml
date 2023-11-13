@@ -1,0 +1,50 @@
+---
+version: 1.0
+name: instance_down
+description: handle one or more instances down of nomad job
+
+input:
+  - hostip
+
+task:
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Summary: Host <% ctx().hostip %> is down
+    next:
+      do: nomadjob_restart
+  
+  nomadjob_restart:
+    action: core.local
+    input:
+      cmd: cmd="nomad job restart -address=http://10.63.20.226:4646 -namespace=app -on-error=fail statping"
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stdout: <% result().stdout %>
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: success
+        publish:
+          - stdout: <% result().stdout %>
+          - stderr: <% result().stderr %>
+  
+  failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %><% ctx().stdout %>
+        Summary: Restart Nomad job failed
+  
+  success:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %><% ctx().stdout %>
+        Summary: Restart Nomad job successful
+      

@@ -1,0 +1,13 @@
+---
+name: "instance_down"
+pack: "certademo"
+description: "handle one or more instances down of nomad job"
+runner_type: "orquesta"
+entry_point: "workflows/instance_down"
+enabled: true
+
+parameters:
+  hostip:
+    type: "string"
+    description: "a host"
+    required: true

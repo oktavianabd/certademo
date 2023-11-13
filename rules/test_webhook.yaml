@@ -1,0 +1,20 @@
+---
+name: "test_webhook"
+pack: "certademo"
+description: "test webhook for demo purpose"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.name:
+    pattern: "certademo"
+    type: "equals"
+
+action:
+  ref: "certademo.test_webhook"
+  parameters:
+    body: "{{trigger.body.name}}"

@@ -1,0 +1,13 @@
+---
+name: "test_webhook"
+pack: "certademo"
+description: "test webhook for demo purpose"
+runner_type: "orquesta"
+entry_point: "workflows/test_webhook.yaml"
+enabled: true
+
+parameters:
+  body:
+    type: "string"
+    description: "a json body payload"
+    required: true

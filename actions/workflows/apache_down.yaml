@@ -1,0 +1,60 @@
+---
+version: 1.0
+name: apache_down
+description: handle apache service down
+
+input:
+  - hostip
+
+tasks:
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Summary: Apache service down in <% ctx().hostip %>
+
+    next:
+      - when: <% succeeded() %>
+        do: get_approval
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: "Do you want to continue to restart the httpd service ?"
+            required: True
+    next:
+      - when: <% succeeded() %>
+        do: restart
+      - when: <% failed() %>
+        do: stop
+  
+  restart:
+    action: core.remote_sudo cmd="systemctl restart httpd" hosts="<% ctx().hostip %>"
+    next:
+      - when: <% succeeded() %>
+        do: success
+      - when: <% failed() %>
+        do: failed
+  
+  success:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: httpd service successfully restarted 
+  
+  failed: 
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: httpd failed to restart
+
+  stop:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: Failed, please get approval before restart httpd service

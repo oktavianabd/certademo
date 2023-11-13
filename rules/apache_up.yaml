@@ -1,0 +1,25 @@
+---
+name: "apache_up"
+pack: "certademo"
+description: "apache up"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "ApacheDown"
+    type: "equals"
+  trigger.body.alerts[0].status:
+    pattern: "resolved"
+    type: "equals"
+
+action:
+  ref: "chatops.post_message"
+  parameters:
+    channel: "stackstorm-demo"
+    message: |
+      Apache is up on {{trigger.body.alerts[0].labels.instance}}
