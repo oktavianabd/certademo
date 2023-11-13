@@ -27,12 +27,12 @@ tasks:
     next:
       - when: <% failed() %>
         do: failure
-        publish:
-          - stdout: <% result().stdout %>
+        # publish:
+        #   - stdout: <% result().stdout %>
       - when: <% succeeded() %>
         do: success
-        publish:
-          - stdout: <% result().stdout %>
+        # publish:
+        #   - stdout: <% result().stdout %>
 
   failure:
     action: chatops.post_message
