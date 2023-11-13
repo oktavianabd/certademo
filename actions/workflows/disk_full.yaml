@@ -27,20 +27,19 @@ tasks:
     next:
       - when: <% failed() %>
         do: failure
-        # publish:
-        #   - stdout: <% result().stdout %>
-        #   - stderr: <% result().stderr %>
+        publish:
+          - stdout: <% result().stdout %>
       - when: <% succeeded() %>
         do: success
-        # publish:
-        #   - stdout: <% result().stdout %>
-        #   - stderr: <% result().stderr %>
+        publish:
+          - stdout: <% result().stdout %>
 
   failure:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
+        <ctx().stdout>
         Summary: Remove logs failed
 
   success:
@@ -48,5 +47,6 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
+        <ctx().stdout>
         Summary: Remove logs successful  
       
