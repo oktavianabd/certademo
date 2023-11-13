@@ -45,7 +45,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        <% ctx().stdout %>
+        <% ctx().stderr %><% ctx().stdout %>
         Sumarry: Great! Run asible playbook successful, task2 complete"
       # channel="stackstorm-demo" message="Summary:Great! Run asible playbook successful, task2 complete"
     # action: chatops.post_message channel="stackstorm-demo" message="<% ctx().stdout %> run asible playbook successful, task2 complete"

@@ -23,8 +23,7 @@ tasks:
     input:
       hosts: <% ctx().hostip %>
       target: /var/log/big*.log
-      sudo: "true"
-    
+      sudo: true
     next:
       - when: <% failed() %>
         do: failure
@@ -42,7 +41,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        <% ctx().stderr %>
+        "<% ctx().stderr %>"
         Summary: Remove logs failed
 
   success:
@@ -50,6 +49,6 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        <% ctx().stdout %>
+        "<% ctx().stdout %>"
         Summary: Remove logs successful  
       
