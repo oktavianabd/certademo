@@ -17,7 +17,7 @@ tasks:
   task2:
     action: ansible.playbook
     input:
-      playbook: /etc/ansible/test_ansible_access.yaml
+      playbook: /etc/ansible/test_ansible_accesss.yaml
     next:
       - when: <% failed() %>
         do: failure
