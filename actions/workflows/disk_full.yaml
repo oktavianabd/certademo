@@ -27,14 +27,14 @@ tasks:
     next:
       - when: <% failed() %>
         do: failure
-        publish:
-          - stdout: <% result().stdout %>
-          - stderr: <% result().stderr %>
+        # publish:
+        #   - stdout: <% result().stdout %>
+        #   - stderr: <% result().stderr %>
       - when: <% succeeded() %>
         do: success
-        publish:
-          - stdout: <% result().stdout %>
-          - stderr: <% result().stderr %>
+        # publish:
+        #   - stdout: <% result().stdout %>
+        #   - stderr: <% result().stderr %>
 
   failure:
     action: chatops.post_message
