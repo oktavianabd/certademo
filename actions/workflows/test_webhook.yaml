@@ -17,7 +17,7 @@ tasks:
   task2:
     action: ansible.playbook
     input:
-      playbook: /etc/ansible/test_ansible_accesss.yaml
+      playbook: /etc/ansible/test_ansible_access.yaml
     next:
       - when: <% failed() %>
         do: failure
@@ -26,9 +26,10 @@ tasks:
           - stderr: <% result().stderr %>
       - when: <% succeeded() %>
         do: success
-        publish: 
+        publish:
           - stdout: <% result().stdout %>
           - stderr: <% result().stderr %>
+
   failure:
     # action: chatops.post_message channel="stackstorm-demo" message="run ansible playbook failure, task2 not complete, please check the playbook file"
     action: chatops.post_message
