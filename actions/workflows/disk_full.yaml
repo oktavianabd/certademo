@@ -41,7 +41,6 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        "<% ctx().stderr %>"
         Summary: Remove logs failed
 
   success:
@@ -49,6 +48,5 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        "<% ctx().stdout %>"
         Summary: Remove logs successful  
       
