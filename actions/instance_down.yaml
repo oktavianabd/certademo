@@ -9,5 +9,5 @@ enabled: true
 parameters:
   hostip:
     type: "string"
-    description: "a host"
+    description: "a hostip"
     required: true
