@@ -18,7 +18,7 @@ criteria:
     type: "equals"
 
 action:
-  ref: "chatops.disk_full"
+  ref: "certademo.disk_full"
   parameters:
     hostip: "{{trigger.body.alerts[0].labels.instance}}"
     # message: |
