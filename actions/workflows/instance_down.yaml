@@ -15,7 +15,9 @@ task:
         Summary: Host <% ctx().hostip %> is down
     next:
       do: nomadjob_restart
-  
+  nomadjob_restart:
+    action: core.echo message="Job restarted"
+    
   # nomadjob_restart:
   #   action: core.local
   #   input:
