@@ -6,7 +6,7 @@ description: handle one or more instances down of nomad job
 input:
   - hostip
 
-task:
+tasks:
   notify:
     action: chatops.post_message
     input:
@@ -14,10 +14,11 @@ task:
       message: |
         Summary: Host <% ctx().hostip %> is down
     next:
-      do: nomadjob_restart
+      - when: <% succeeded() %>
+        do: nomadjob_restart
   nomadjob_restart:
     action: core.echo message="Job restarted"
-    
+
   # nomadjob_restart:
   #   action: core.local
   #   input:
