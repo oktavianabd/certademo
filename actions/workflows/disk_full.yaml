@@ -15,9 +15,10 @@ tasks:
       cmd: "ls -lh /var/log/big*.log"
       hosts: <% ctx().hostip %>
     next:
-      do: notify
-      publish:
-        - stdout: <% result() %>
+      - when: <% succeeded %>
+        do: notify
+        publish:
+          - stdout: <% result() %>
 
   notify:
     action: chatops.post_message
