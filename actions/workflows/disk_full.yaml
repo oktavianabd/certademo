@@ -10,7 +10,7 @@ tasks:
   checkdisk:
     action: core.remote
     input:
-      cmd: "ls /var/log/big*.log"
+      cmd: ls -lh /var/log/big*.log
       hosts: <% ctx().hostip %>
     next:
       - when: <% succeeded %>
