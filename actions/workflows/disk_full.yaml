@@ -7,16 +7,52 @@ input:
   - hostip
 
 tasks:
+  checkdisk:
+    action: core.remote
+    input:
+      cmd: "ls /var/log/big*.log"
+      hosts: <% ctx().hostip %>
+    next:
+      - when: <% succeeded %>
+        do: notify
+        publish:
+          - bigfile: <% result().stdout %>
+
   notify:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
-        Will try to remove files big*.log on /var/log/
+        We found big log file <% ctx().bigfile %>, do you want to remove it?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+        
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: We found big log file, do you want to remove it?
+            required: True
     next:
       - when: <% succeeded %>
         do: remove_logs
+
+  # notify:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Summary: Disk on <% ctx().hostip %> is out of disk space
+  #       Will try to remove files big*.log on /var/log/
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: remove_logs
   
   remove_logs:
     action: linux.rm
