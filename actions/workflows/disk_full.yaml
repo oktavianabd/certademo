@@ -5,13 +5,11 @@ description: handle when host out of disk space
 
 input:
   - hostip
-# vars:
-#   - bigfile: null
 
 output:
-  - stdout: <% ctx(stdout) %>
+  # - stdout: <% ctx(stdout) %>
   - taskid: <% ctx(taskid) %>
-  - taskname: <% ctx(taskname) %>
+  # - taskname: <% ctx(taskname) %>
 tasks:
   checkdisk:
     action: core.remote_sudo
@@ -22,9 +20,9 @@ tasks:
       - when: <% succeeded %>
         do: notify
         publish:
-          - stdout: <% result().get(ctx().hostip).stdout %>
+          # - stdout: <% result().get(ctx().hostip).stdout %>
           - taskid: <% task_execution_id() %>
-          - taskname: <% task_name() %>
+          # - taskname: <% task_name() %>
   notify:
     action: chatops.post_message
     input:
@@ -32,9 +30,9 @@ tasks:
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log files as below:
-        <% ctx().stdout %>
+#       <% ctx().stdout %>
         <% ctx().taskid %>
-        <% ctx().taskname %>
+#        <% ctx().taskname %>
   #   next:
   #     - when: <% succeeded %>
   #       do: get_approval 
