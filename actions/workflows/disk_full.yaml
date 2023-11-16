@@ -12,6 +12,7 @@ tasks:
     input:
       cmd: ls -lh /var/log/big*.log
       hosts: <% ctx().hostip %>
+      sudo: true
     next:
       - when: <% succeeded %>
         do: notify
