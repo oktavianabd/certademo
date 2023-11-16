@@ -5,8 +5,8 @@ description: handle when host out of disk space
 
 input:
   - hostip
-vars:
-  - bigfile: null
+# vars:
+#   - bigfile: null
 
 tasks:
   checkdisk:
@@ -17,7 +17,7 @@ tasks:
     next:
       do: notify
       publish:
-        - bigfile: <% result() %>
+        - stdout: <% result() %>
 
   notify:
     action: chatops.post_message
@@ -25,9 +25,9 @@ tasks:
       channel: stackstorm-demo
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
-        We found big log file <% ctx(result) %>, do you want to remove it?
-# output:
-#   - stdout: <% ctx(stdout) %> 
+        We found big log file <% ctx(stdout) %>, do you want to remove it?
+output:
+  - stdout: <% ctx(stdout) %> 
   #   next:
   #     - when: <% succeeded %>
   #       do: get_approval
