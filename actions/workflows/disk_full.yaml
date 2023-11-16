@@ -32,8 +32,9 @@ tasks:
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log files as below:
         <% ctx().stdout %>
-        {{ ctx("this_task_no_arg") }}
-        {{ ctx("this_task_by_name") }}
+        {{ ctx().this_task_no_arg }}
+        {{ ctx().this_task_by_name }}
+
 output:
   - stdout: <% ctx(stdout) %>
   - this_task_no_arg: '{{ ctx("this_task_no_arg") }}'
