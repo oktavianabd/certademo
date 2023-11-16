@@ -10,7 +10,8 @@ input:
 
 output:
   - stdout: <% ctx(stdout) %>
-
+  - taskid: <% ctx(taskid) %>
+  - taskname: <% ctx(taskname) %>
 tasks:
   checkdisk:
     action: core.remote_sudo
@@ -22,8 +23,8 @@ tasks:
         do: notify
         publish:
           - stdout: <% result().get(ctx().hostip).stdout %>
-          # - checkdiskid: <% task_execution_id() %>
-
+          - taskid: <% task_execution_id() %>
+          - taskname: <% task_name() %>
   notify:
     action: chatops.post_message
     input:
@@ -32,50 +33,52 @@ tasks:
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log files as below:
         <% ctx().stdout %>
-    next:
-      - when: <% succeeded %>
-        do: get_approval 
+        <% ctx().taskid %>
+        <% ctx().taskname %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: get_approval 
 
-  get_approval:
-    action: core.ask
-    input:
-      schema:
-        type: object
-        properties:
-          approved:
-            type: boolean
-            description: Do you want to continue to remove the log files?
-            required: True
-    next:
-      - when: <% succeeded %>
-        do: remove_logs
+  # get_approval:
+  #   action: core.ask
+  #   input:
+  #     schema:
+  #       type: object
+  #       properties:
+  #         approved:
+  #           type: boolean
+  #           description: Do you want to continue to remove the log files?
+  #           required: True
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: remove_logs
 
-  remove_logs:
-    action: linux.rm
-    input:
-      hosts: <% ctx().hostip %>
-      target: /var/log/big*.log
-      sudo: true
-    next:
-      - when: <% failed() %>
-        do: failure
-        # publish:
-        #   - stdout: <% result().stdout %>
-      - when: <% succeeded() %>
-        do: success
-        # publish:
-        #   - stdout: <% result().stdout %>
+  # remove_logs:
+  #   action: linux.rm
+  #   input:
+  #     hosts: <% ctx().hostip %>
+  #     target: /var/log/big*.log
+  #     sudo: true
+  #   next:
+  #     - when: <% failed() %>
+  #       do: failure
+  #       # publish:
+  #       #   - stdout: <% result().stdout %>
+  #     - when: <% succeeded() %>
+  #       do: success
+  #       # publish:
+  #       #   - stdout: <% result().stdout %>
 
-  failure:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Summary: Remove logs failed
+  # failure:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Summary: Remove logs failed
 
-  success:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Summary: Remove logs successful
+  # success:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Summary: Remove logs successful
