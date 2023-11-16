@@ -12,7 +12,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Summary: Host <% ctx().hostip %> is down
+        Alert: Host <% ctx().hostip %> is down
     next:
       - when: <% succeeded() %>
         do: nomadjob_restart
@@ -39,7 +39,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stderr %><% ctx().stdout %>
-        Summary: Restart Nomad job failed
+        Result: Restart Nomad job failed
   
   success:
     action: chatops.post_message
@@ -47,4 +47,4 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stderr %><% ctx().stdout %>
-        Summary: Restart Nomad job successful
+        Result: Restart Nomad job successful

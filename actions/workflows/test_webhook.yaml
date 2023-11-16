@@ -37,7 +37,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stderr %><% ctx().stdout %>
-        Summary: Run ansible playbook failure, task2 not complete, please check the playbook file
+        Result: Run ansible playbook failure, task2 not complete, please check the playbook file
         Thank you
   
   success:
@@ -46,6 +46,6 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stderr %><% ctx().stdout %>
-        Sumarry: Great! Run asible playbook successful, task2 complete"
+        Result: Great! Run asible playbook successful, task2 complete"
       # channel="stackstorm-demo" message="Summary:Great! Run asible playbook successful, task2 complete"
     # action: chatops.post_message channel="stackstorm-demo" message="<% ctx().stdout %> run asible playbook successful, task2 complete"

@@ -25,10 +25,9 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Summary: Disk on <% ctx().hostip %> is out of disk space
+        Alert: Disk on <% ctx().hostip %> is out of disk space
         List of log files contain name big*.log, do you want to remove it?
         <% ctx().stdout %>
-
     next:
       - when: <% succeeded %>
         do: get_approval 
@@ -68,11 +67,11 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Summary: Remove logs failed
+        Result: Remove logs failed
 
   success:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
-        Summary: Remove logs successful
+        Result: Remove logs successful

@@ -12,7 +12,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Summary: Apache service down in <% ctx().hostip %>
+        Alert: Apache service down in <% ctx().hostip %>
 
     next:
       - when: <% succeeded() %>
