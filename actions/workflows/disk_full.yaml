@@ -21,7 +21,7 @@ tasks:
         do: notify
         publish:
           # - stdout: <% result().get(ctx().hostip).stdout %>
-          - taskid: <% task_execution_id() %>
+          - taskid: <% result() %>
           # - taskname: <% task_name() %>
   notify:
     action: chatops.post_message
@@ -30,9 +30,9 @@ tasks:
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log files as below:
-#       <% ctx().stdout %>
         <% ctx().taskid %>
-#        <% ctx().taskname %>
+#       <% ctx().stdout %>
+#       <% ctx().taskname %>
   #   next:
   #     - when: <% succeeded %>
   #       do: get_approval 
