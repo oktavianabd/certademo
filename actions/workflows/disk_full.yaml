@@ -5,6 +5,8 @@ description: handle when host out of disk space
 
 input:
   - hostip
+vars:
+  - bigfile: null
 
 tasks:
   checkdisk:
@@ -16,7 +18,7 @@ tasks:
       - when: <% succeeded %>
         do: notify
         publish:
-          - bigfile: <% task().result.stdout %>
+          - bigfile: <% result().value %>
 
   notify:
     action: chatops.post_message
