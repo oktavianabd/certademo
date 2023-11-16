@@ -21,7 +21,7 @@ tasks:
         do: notify
         publish:
           - stdout: <% result().get(ctx().hostip).stdout %>
-          - taskid: <% task("checkdisk").task_execution_id %>
+          - taskid: <% task().task_execution_id %>
           # - taskname: <% task_name() %>
   notify:
     action: chatops.post_message
@@ -32,7 +32,7 @@ tasks:
         We found big log files as below:
         <% ctx().stdout %>
         <% ctx().taskid %>
-        <% ctx().task.task_execution_id %>
+        <% ctx().st2.action_execution_id %>
 #       <% ctx().taskname %>
   #   next:
   #     - when: <% succeeded %>
