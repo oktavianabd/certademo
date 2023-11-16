@@ -24,7 +24,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
-        We found big log file <% ctx(stdout) %>, do you want to remove it?
+        We found big log file <% ctx(stdout).stdout %>, do you want to remove it?
 output:
   - stdout: <% ctx(stdout) %> 
   #   next:
