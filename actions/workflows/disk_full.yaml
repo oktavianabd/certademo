@@ -8,11 +8,11 @@ input:
 
 output:
   - stdout: <% ctx(stdout) %>
-  - task_ex_id: <% ctx(task_ex_id) %>
-  - wf_ex_id: <% ctx(wf_ex_id) %>
-  - task_name: <% ctx(task_name) %>
+  # - task_ex_id: <% ctx(task_ex_id) %>
+  # - wf_ex_id: <% ctx(wf_ex_id) %>
+  # - task_name: <% ctx(task_name) %>
   - task_id: <% ctx(task_id) %>
-  # - taskname: <% ctx(taskname) %>
+
 tasks:
   checkdisk:
     action: core.remote_sudo
@@ -24,9 +24,9 @@ tasks:
         do: notify
         publish:
           - stdout: <% result().get(ctx().hostip).stdout %>
-          - task_ex_id: <% task().task_execution_id %>
-          - wf_ex_id: <% task().workflow_execution_id %>
-          - task_name: <% task().task_name %>
+          # - task_ex_id: <% task().task_execution_id %>
+          # - wf_ex_id: <% task().workflow_execution_id %>
+          # - task_name: <% task().task_name %>
           - task_id: <% task().task_id %>
   notify:
     action: chatops.post_message
@@ -36,9 +36,9 @@ tasks:
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log files as below:
         <% ctx().stdout %>
-        <% ctx().task_ex_id %>
-        <% ctx().wf_ex_id %>
-        <% ctx().task_name %>
+#        <% ctx().task_ex_id %>
+#        <% ctx().wf_ex_id %>
+#        <% ctx().task_name %>
         <% ctx().task_id %>
 
 
