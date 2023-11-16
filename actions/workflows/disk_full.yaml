@@ -22,14 +22,13 @@ tasks:
         do: notify
         publish:
           - stdout: <% result().get(ctx().hostip).stdout %>
-          - checkdiskid: <% task_execution_id() %>
+          # - checkdiskid: <% task_execution_id() %>
 
   notify:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
-        <% task_execution_id().checkdiskid %>
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log files as below:
         <% ctx().stdout %>
