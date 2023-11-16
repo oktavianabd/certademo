@@ -32,6 +32,7 @@ tasks:
         We found big log files as below:
         <% ctx().stdout %>
         <% ctx().taskid %>
+        <% ctx().st2.action_execution_id %>
 #       <% ctx().taskname %>
   #   next:
   #     - when: <% succeeded %>
