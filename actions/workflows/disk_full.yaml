@@ -15,10 +15,9 @@ tasks:
       cmd: "ls -lh /var/log/big*.log"
       hosts: <% ctx().hostip %>
     next:
-      - when: <% succeeded %>
         do: notify
         publish:
-          - bigfile: <% result().hostip.stdout %>
+          - bigfile: <% result() %>
 
   notify:
     action: chatops.post_message
@@ -26,7 +25,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
-        We found big log file <% ctx().bigfile %>, do you want to remove it?
+        We found big log file <% ctx(result) %>, do you want to remove it?
 # output:
 #   - stdout: <% ctx(stdout) %> 
   #   next:
