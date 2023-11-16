@@ -15,8 +15,8 @@ tasks:
     next:
       - when: <% succeeded %>
         do: notify
-        # publish:
-        #   - bigfile: <% result().stdout %>
+        publish:
+          - stdout: <% result() %>
 
   notify:
     action: chatops.post_message
@@ -25,6 +25,8 @@ tasks:
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log file, do you want to remove it?
+output:
+  - stdout: <% ctx(stdout) %> 
   #   next:
   #     - when: <% succeeded %>
   #       do: get_approval
