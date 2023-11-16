@@ -24,7 +24,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
-        We found big log file <% ctx().bigfile %>, do you want to remove it?
+        We found big log file, do you want to remove it?
   #   next:
   #     - when: <% succeeded %>
   #       do: get_approval
