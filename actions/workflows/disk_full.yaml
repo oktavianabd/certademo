@@ -27,7 +27,7 @@ tasks:
           # - task_ex_id: <% task().task_execution_id %>
           # - wf_ex_id: <% task().workflow_execution_id %>
           # - task_name: <% task().task_name %>
-          - task_id: <% task("checkdisk").task_id %>
+          - task_id: <% task("checkdisk").result %>
   notify:
     action: chatops.post_message
     input:
