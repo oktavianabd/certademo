@@ -10,8 +10,8 @@ input:
 
 output:
   - stdout: <% ctx(stdout) %> 
-  - askid: <% ctx(id) %>
-  
+  # - stdout: <% ctx(id) %>
+
 tasks:
   checkdisk:
     action: core.remote_sudo
@@ -52,7 +52,7 @@ tasks:
       - when: <% succeeded %>
         do: remove_logs
         publish:
-          - askid: <% id() %>
+          - stdout: <% id() %>
 
   # notify:
   #   action: chatops.post_message
