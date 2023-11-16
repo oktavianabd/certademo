@@ -11,7 +11,7 @@ output:
   # - task_ex_id: <% ctx(task_ex_id) %>
   # - wf_ex_id: <% ctx(wf_ex_id) %>
   # - task_name: <% ctx(task_name) %>
-  - task_id: <% ctx(task_id) %>
+  # - task_id: <% ctx(task_id) %>
 
 tasks:
   checkdisk:
@@ -27,7 +27,7 @@ tasks:
           # - task_ex_id: <% task().task_execution_id %>
           # - wf_ex_id: <% task().workflow_execution_id %>
           # - task_name: <% task().task_name %>
-          - task_id: <% task("checkdisk").result %>
+          # - task_id: <% task("checkdisk").result %>
   notify:
     action: chatops.post_message
     input:
@@ -39,7 +39,7 @@ tasks:
 #        <% ctx().task_ex_id %>
 #        <% ctx().wf_ex_id %>
 #        <% ctx().task_name %>
-        <% ctx().task_id %>
+        # <% ctx().task_id %>
 
 
   #   next:
