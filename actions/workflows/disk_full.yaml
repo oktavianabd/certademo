@@ -8,11 +8,10 @@ input:
 
 tasks:
   checkdisk:
-    action: core.remote
+    action: core.remote_sudo
     input:
       cmd: ls -lh /var/log/big*.log
       hosts: <% ctx().hostip %>
-      sudo: true
     next:
       - when: <% succeeded %>
         do: notify
