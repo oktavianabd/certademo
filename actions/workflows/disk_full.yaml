@@ -25,7 +25,7 @@ tasks:
         do: notify
         publish:
           - stdout: <% result().get(ctx().hostip).stdout %>
-          - task_id: <% task("checkdisk").result %>
+          - task_id: <% task("checkdisk").start_timestamp %>
 
           # - task_ex_id: <% task().task_execution_id %>
           # - wf_ex_id: <% task().workflow_execution_id %>
