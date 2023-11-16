@@ -6,13 +6,6 @@ description: handle when host out of disk space
 input:
   - hostip
 
-output:
-  - stdout: <% ctx(stdout) %>
-  - task_id: <% ctx(task_id) %>
-  # - task_ex_id: <% ctx(task_ex_id) %>
-  # - wf_ex_id: <% ctx(wf_ex_id) %>
-  # - task_name: <% ctx(task_name) %>
-  # - task_id: <% ctx(task_id) %>
 
 tasks:
   checkdisk:
@@ -25,8 +18,8 @@ tasks:
         do: notify
         publish:
           - stdout: <% result().get(ctx().hostip).stdout %>
-          - task_id: <% task("checkdisk").start_timestamp %>
-
+          - this_task_no_arg: '{{ task().task_id }}'
+          - this_task_by_name: '{{ task("task1").task_id }}'
           # - task_ex_id: <% task().task_execution_id %>
           # - wf_ex_id: <% task().workflow_execution_id %>
           # - task_name: <% task().task_name %>
@@ -39,7 +32,17 @@ tasks:
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log files as below:
         <% ctx().stdout %>
-        <% ctx().task_id %>
+        {{ ctx("this_task_no_arg") }}
+        {{ ctx("this_task_by_name") }}
+output:
+  - stdout: <% ctx(stdout) %>
+  - this_task_no_arg: '{{ ctx("this_task_no_arg") }}'
+  - this_task_by_name: '{{ ctx("this_task_by_name") }}'
+
+  # - task_ex_id: <% ctx(task_ex_id) %>
+  # - wf_ex_id: <% ctx(wf_ex_id) %>
+  # - task_name: <% ctx(task_name) %>
+  # - task_id: <% ctx(task_id) %>
 
 #        <% ctx().task_ex_id %>
 #        <% ctx().wf_ex_id %>
