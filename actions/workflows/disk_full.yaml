@@ -15,8 +15,8 @@ tasks:
     next:
       - when: <% succeeded %>
         do: notify
-        publish:
-          - bigfile: <% result().stdout %>
+        # publish:
+        #   - bigfile: <% result().stdout %>
 
   notify:
     action: chatops.post_message
