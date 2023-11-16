@@ -25,23 +25,23 @@ tasks:
       message: |
         Summary: Disk on <% ctx().hostip %> is out of disk space
         We found big log file <% ctx().bigfile %>, do you want to remove it?
-    next:
-      - when: <% succeeded %>
-        do: get_approval
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: get_approval
         
-  get_approval:
-    action: core.ask
-    input:
-      schema:
-        type: object
-        properties:
-          approved:
-            type: boolean
-            description: We found big log file, do you want to remove it?
-            required: True
-    next:
-      - when: <% succeeded %>
-        do: remove_logs
+  # get_approval:
+  #   action: core.ask
+  #   input:
+  #     schema:
+  #       type: object
+  #       properties:
+  #         approved:
+  #           type: boolean
+  #           description: We found big log file, do you want to remove it?
+  #           required: True
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: remove_logs
 
   # notify:
   #   action: chatops.post_message
@@ -54,33 +54,33 @@ tasks:
   #     - when: <% succeeded %>
   #       do: remove_logs
   
-  remove_logs:
-    action: linux.rm
-    input:
-      hosts: <% ctx().hostip %>
-      target: /var/log/big*.log
-      sudo: true
-    next:
-      - when: <% failed() %>
-        do: failure
-        # publish:
-        #   - stdout: <% result().stdout %>
-      - when: <% succeeded() %>
-        do: success
-        # publish:
-        #   - stdout: <% result().stdout %>
+  # remove_logs:
+  #   action: linux.rm
+  #   input:
+  #     hosts: <% ctx().hostip %>
+  #     target: /var/log/big*.log
+  #     sudo: true
+  #   next:
+  #     - when: <% failed() %>
+  #       do: failure
+  #       # publish:
+  #       #   - stdout: <% result().stdout %>
+  #     - when: <% succeeded() %>
+  #       do: success
+  #       # publish:
+  #       #   - stdout: <% result().stdout %>
 
-  failure:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Summary: Remove logs failed
+  # failure:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Summary: Remove logs failed
 
-  success:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Summary: Remove logs successful  
+  # success:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Summary: Remove logs successful  
       
