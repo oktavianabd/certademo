@@ -20,7 +20,7 @@ tasks:
             description: "Continue?"
             required: True
     next:
-      - when: <% succeeded and ctx().result.response.approved = false %>
+      - when: <% succeeded and result()(ctx().response.approved) = false %>
         do: finish
       - when: <% failed() %>
         do: stop
