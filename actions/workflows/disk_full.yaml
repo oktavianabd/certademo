@@ -43,8 +43,13 @@ tasks:
             description: Do you want to continue to remove the log files?
             required: True
     next:
-      - when: <% succeeded %>
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
         do: remove_logs
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+  
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
 
   remove_logs:
     action: linux.rm
