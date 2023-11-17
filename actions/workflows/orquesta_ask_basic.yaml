@@ -53,6 +53,7 @@ tasks:
     action: core.echo message="Approved, Automation completed."
 
   stop:
+    join: 2
     action: core.echo message="Un-approved, Automation stopped."
   
   
