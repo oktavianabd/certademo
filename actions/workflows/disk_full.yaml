@@ -26,7 +26,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Alert: Disk on <% ctx().hostip %> is out of disk space
-        List of log files contain name big.log, do you want to remove it?
+        List of log files, do you want to remove it?
         <% ctx().stdout %>
     next:
       - when: <% succeeded %>
