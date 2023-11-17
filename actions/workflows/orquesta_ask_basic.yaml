@@ -29,11 +29,11 @@ tasks:
       - when: <% failed %>
         do: failure
     
-    finish:
-      action: core.echo message="Approved, Automation completed."
+  finish:
+    action: core.echo message="Approved, Automation completed."
     
-    stop:
-      action: core.echo message="Un-approved, Automation stopped."
+  stop:
+    action: core.echo message="Un-approved, Automation stopped."
   
   failure:
     action: core.echo message="Automation error/failed"
