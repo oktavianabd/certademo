@@ -59,6 +59,8 @@ tasks:
         #   - stdout: <% result().stdout %>
       - when: <% succeeded() %>
         do: success
+        publish:
+          - stdout: <% result().get(ctx().hostip).stdout %>
         # publish:
         #   - stdout: <% result().stdout %>
 
@@ -75,3 +77,4 @@ tasks:
       channel: stackstorm-demo
       message: |
         Result: Remove logs successful
+        <% ctx().stdout %>
