@@ -44,7 +44,7 @@ tasks:
       - when: <% succeeded and result().response.approved = false %>
         do: stop
       - when: <% failed %>
-        do: failed
+        do: failure
 
   finish:
     action: core.echo message="Approved, Automation completed."
