@@ -20,18 +20,36 @@ tasks:
             description: "Continue?"
             required: True
     next:
-      - when: <% succeeded and result().response.approved = true %>
-        do: finish
-      - when: <% succeeded and result().response.approved = false %>
-        do: stop
+      - when: <% succeeded %>
+        and:
+          - when: <% result().response.approved = true %>
+            do: finish
+          - when: <% result().response.approved = false %>
+            do: stop
       - when: <% failed %>
-        do: failure
-
-  finish:
-    action: core.echo message="Approved, Automation completed."
-
-  stop:
-    action: core.echo message="Un-approved, Automation stopped."
+        do:
+    finish:
+      action: core.echo message="Approved, Automation completed."
+    
+    stop:
+      action: core.echo message="Un-approved, Automation stopped."
   
   failure:
-    action: core.echo message="Automation error/failed."
+    action: core.echo message="Automation error/failed"
+            
+  #   next:
+  #     - when: <% succeeded and result().response.approved = true %>
+  #       do: finish
+  #     - when: <% succeeded and result().response.approved = false %>
+  #       do: stop
+  #     - when: <% failed %>
+  #       do: failure
+
+  # finish:
+  #   action: core.echo message="Approved, Automation completed."
+
+  # stop:
+  #   action: core.echo message="Un-approved, Automation stopped."
+  
+  # failure:
+  #   action: core.echo message="Automation error/failed."
