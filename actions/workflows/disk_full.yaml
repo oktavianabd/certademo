@@ -60,8 +60,8 @@ tasks:
     next:
       - when: <% failed() %>
         do: failure
-        # publish:
-        #   - stdout: <% result().stdout %>
+        publish:
+          - rm_failed: <% result().get(ctx().hostip).stderr %>
       - when: <% succeeded() %>
         do: success
         publish:
@@ -73,7 +73,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Result: Remove logs failed
-
+        <% ctx().rm_failed %>
   success:
     action: chatops.post_message
     input:
