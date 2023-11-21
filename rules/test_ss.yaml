@@ -20,6 +20,6 @@ criteria:
 action:
   ref: "chatops.post_message"
   parameters:
-    channel: "stackstorm-demo"
+    channel: "stackstorm-demo-http"
     message: |
       {{ trigger.body.alerts }}
