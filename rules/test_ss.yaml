@@ -17,6 +17,12 @@ criteria:
 action:
   ref: "chatops.post_message"
   parameters:
-    channel: "stackstorm-demo-http"
+    channel: "stackstorm-demo"
     message: |
-      {{ trigger.body.alerts }}
+      status: {{trigger.body.alerts[0].status}}
+      severity: {{trigger.body.alerts[0].labels.severity}}
+      hostip: {{trigger.body.alerts[0].labels.instance}}
+      startsAt: {{trigger.body.alerts[0].startsAt}}
+      endsAt: {{trigger.body.alerts[0].endsAt}}
+      description: {{trigger.body.alerts[0].annotations.description}}
+      summary: {{trigger.body.alerts[0].annotations.summary}}
