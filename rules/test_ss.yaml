@@ -13,9 +13,6 @@ criteria:
   trigger.body.alerts[0].labels.alertname:
     pattern: "TestAlert"
     type: "equals"
-  trigger.body.alerts[].status:
-    pattern: "firing"
-    type: "equals"
 
 action:
   ref: "chatops.post_message"
