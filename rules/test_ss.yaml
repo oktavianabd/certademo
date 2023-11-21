@@ -1,0 +1,25 @@
+---
+name: "test_ss"
+pack: "certademo"
+description: "test stackstorm-demo"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "TestAlert"
+    type: "equals"
+  trigger.body.alerts[].status:
+    pattern: "firing"
+    type: "equals"
+
+action:
+  ref: "chatops.post_message"
+  parameters:
+    channel: "stackstorm-demo"
+    message: |
+      {{ trigger.body.alerts }}
