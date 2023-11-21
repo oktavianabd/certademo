@@ -1,0 +1,26 @@
+---
+name: "test grafana alert"
+pack: "certademo"
+description: "test grafana alert via webhook"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "TestAlert"
+    type: "equals"
+
+action:
+  ref: "chatops.post_message"
+  parameters:
+    channel: "stackstorm-demo"
+    message: |
+      status: {{trigger.body.alerts[0].status}}
+      hostip: {{trigger.body.alerts[0].labels.instance}}
+      alertname: {{trigger.body.alerts[0.labels.alertname]}}
+      startsAt: {{trigger.body.alerts[0].startsAt}}
+      endsAt: {{trigger.body.alerts[0].endsAt}}

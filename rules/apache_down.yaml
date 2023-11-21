@@ -12,10 +12,10 @@ trigger:
 criteria:
   trigger.body.alerts[0].labels.alertname:
     pattern: "ApacheDown"
-    type: "startswith"
+    type: "equals"
   trigger.body.alerts[0].status:
     pattern: "firing"
-    type: "startswith"
+    type: "equals"
 
 action:
   ref: "certademo.apache_down"
