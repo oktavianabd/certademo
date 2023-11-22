@@ -1,9 +1,9 @@
 ---
-name: "certa_inquiry_respond"
+name: "inquiry.respond"
 enabled: true
 description: "Respond to an inquiry"
 runner_type: python-script
-entry_point: certa_inquiry_respond.py
+entry_point: inquiry_respond.py
 parameters:
   id:
     type: "string"
