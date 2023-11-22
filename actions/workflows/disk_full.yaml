@@ -13,7 +13,7 @@ tasks:
   checkdisk:
     action: core.remote_sudo
     input:
-      cmd: "ls -lh /var/log/big*.log"
+      cmd: find /var/log/httpd -name "*" -type f -mtime +12 -exec ls -lahtr {} + | sort -n -r
       hosts: <% ctx().hostip %>
     next:
       - when: <% succeeded %>
@@ -52,11 +52,10 @@ tasks:
     action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
 
   remove_logs:
-    action: linux.rm
+    action: core.remote_sudo
     input:
+      cmd: find /var/log/httpd -name "*" -type f -mtime +12 -exec rm -vf {} \;
       hosts: <% ctx().hostip %>
-      target: /var/log/big*.log
-      sudo: true
     next:
       - when: <% failed() %>
         do: failure
