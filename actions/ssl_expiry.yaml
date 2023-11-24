@@ -1,0 +1,12 @@
+---
+name: "ssl_expiry"
+pack: "certademo"
+description: "handle the ssl expiry"
+runner_type: "orquesta"
+entry_point: "workflows/ssl_expiry.yaml"
+enabled: true
+
+parameters:
+  instance:
+    type: "string"
+    description: "a host which monitored for ssl expiration"

@@ -18,9 +18,6 @@ criteria:
     type: "equals"
 
 action:
-  ref: "chatops.post_message"
+  ref: "certademo.ssl_expiry"
   parameters:
-    channel: "stackstorm-demo"
-    message: |
-      status: {{trigger.body.alerts[0].status}}
-      alertname: {{trigger.body.alerts[0].labels.alertname}}
+    instance: "{{trigger.body.alerts[0].labels.instance}}"
