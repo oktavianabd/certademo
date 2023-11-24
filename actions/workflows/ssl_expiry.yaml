@@ -16,7 +16,7 @@ tasks:
       - when: <% succeeded %>
         do: notify
         publish:
-          - stdout: <% result().stdout %>
+          - stdout: <% result().get(ctx().instance).stdout %>
 
   notify:
     action: chatops.post_message
