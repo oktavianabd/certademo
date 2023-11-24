@@ -1,0 +1,25 @@
+---
+name: "ssl_expiry"
+pack: "certademo"
+description: "ssl expiry"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "SSLExpiry"
+    type: "equals"
+  trigger.body.alerts[0].status:
+    pattern: "firing"
+    type: "equals"
+
+action:
+  ref: "chatops.post_message"
+  parameters:
+    channel: "stackstorm-demo"
+    message: |
+      {{trigger.body}}
