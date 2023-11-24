@@ -19,7 +19,7 @@ tasks:
       - when: <% succeeded %>
         do: notify
         publish:
-          - stdout: <% result().stdout %>
+          - stdout: <% result() %>
 
   notify:
     action: chatops.post_message
@@ -27,7 +27,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Alert: SSL certificate on <% ctx().instance %> has been expired
-        <% ctx().stdout %>
+        
     next:
       - when: <% succeeded %>
         do: get_approval
