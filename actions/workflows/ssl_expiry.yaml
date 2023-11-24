@@ -65,5 +65,13 @@ tasks:
       hosts: <% ctx().instance %>
     next:
       - when: <% succeeded() %>
-        do: checkssl
+        do: success
+  
+  success:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Result: 
+        Certificate successully renew to 1 year
       
