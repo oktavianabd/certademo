@@ -44,6 +44,7 @@ tasks:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
         do: renew
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
   
   stop:
     action: chatops.post_message channel="stackstorm-demo" message="Un-approved, automation stopped."
