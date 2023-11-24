@@ -5,9 +5,6 @@ description: handle when ssl certificate of webserver has been expired
 
 input:
   - instance
-
-output:
-  # - stdout: <% ctx(stdout) %>
   
 tasks:
   checkssl:
@@ -19,7 +16,7 @@ tasks:
       - when: <% succeeded %>
         do: notify
         publish:
-          - stdout: <% result() %>
+          - stdout: <% result().stdout %>
 
   notify:
     action: chatops.post_message
@@ -27,7 +24,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Alert: SSL certificate on <% ctx().instance %> has been expired
-        
+        <% ctx().stdout %>       
     next:
       - when: <% succeeded %>
         do: get_approval
