@@ -62,6 +62,7 @@ tasks:
     action: core.remote_sudo
     input:
       cmd: systemctl reload httpd
+      hosts: <% ctx().instance %>
     next:
       - when: <% succeeded() %>
         do: checkssl
