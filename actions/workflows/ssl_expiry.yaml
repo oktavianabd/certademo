@@ -8,6 +8,7 @@ input:
 
 output:
   - stdout: <% ctx(stdout) %>
+  
 tasks:
   checkssl:
     action: core.remote_sudo
@@ -18,7 +19,8 @@ tasks:
       - when: <% succeeded %>
         do: notify
         publish:
-          - stdout: <% result().get(ctx().instance).stdout %>
+          - stdout: <% result().stdout %>
+
   notify:
     action: chatops.post_message
     input:
