@@ -22,4 +22,5 @@ action:
   parameters:
     channel: "stackstorm-demo"
     message: |
-      {{trigger.body}}
+      status: {{trigger.body.alerts[0].status}}
+      alertname: {{trigger.body.alerts[0].labels.alertname}}
