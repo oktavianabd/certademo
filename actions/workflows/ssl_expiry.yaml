@@ -7,7 +7,7 @@ input:
   - instance
 
 output:
-  - stdout: <% ctx(stdout) %>
+  # - stdout: <% ctx(stdout) %>
   
 tasks:
   checkssl:
