@@ -23,8 +23,9 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Alert: SSL certificate on <% ctx().instance %> expired less than 7 days
+        Alert: SSL certificate on <% ctx().instance %> expiry less than 7 days
         <% ctx().stdout %>
+        Do you want to renew it for 1 years?
     next:
       - when: <% succeeded %>
         do: get_approval
