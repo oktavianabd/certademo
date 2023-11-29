@@ -11,7 +11,7 @@ trigger:
 
 criteria:
   trigger.body.alerts[0].labels.alertname:
-    pattern: "RV03Stop"
+    pattern: "NodeDrain_rv03"
     type: "equals"
   trigger.body.alerts[0].status:
     pattern: "firing"
