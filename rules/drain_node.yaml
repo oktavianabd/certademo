@@ -23,8 +23,6 @@ criteria:
 #     hostip: "{{trigger.body.alerts[0].labels.instance}}"
 
 action:
-  ref: "chatops.post_message"
+  ref: "certademo.drain_node"
   parameters:
-    channel: "stackstorm-demo"
-    message: |
-      {{trigger.body}}
+    nodename: "{{trigger.body.alerts[0].labels.nodename}}"

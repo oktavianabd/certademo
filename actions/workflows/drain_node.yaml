@@ -1,0 +1,53 @@
+---
+version: 1.0
+name: drain_node
+description: handle when node drain
+
+input:
+ - nodename
+
+tasks:
+  # checkname:
+  #   action: core.remote_sudo
+  #   input:
+  #     cmd: hostnamectl
+  #     hosts: <% ctx().nodename %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: notify
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Node down
+        Do you want to switchover <% ctx().nodename %> ?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+  
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: Do you want to switchover the node?
+            required: true
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: start
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+  
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+
+  start:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: "Start switchover"
+        
