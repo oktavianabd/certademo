@@ -21,4 +21,4 @@ action:
   ref: "certademo.mail_deferred"
   parameters:
     hostip: "{{trigger.body.alerts[0].labels.host}}"
-    mndeferred: "{{trigger.body.alerts[0].values.B}}"
+    mndeferred: "{{trigger.body.alerts[0].labels.deferred_values}}"
