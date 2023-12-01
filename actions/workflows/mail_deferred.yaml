@@ -38,7 +38,7 @@ tasks:
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
   stop:
-    action: chatops.post_message channel:"stackstorm-demo" message="Un-approved, automation stopped"
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, automation stopped"
 
   remove:
     action: core.remote_sudo
