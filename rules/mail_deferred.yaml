@@ -22,4 +22,4 @@ action:
   parameters:
     channel: "stackstorm-demo"
     message: |
-      {{trigger.body}}}
+      {{trigger.body}}
