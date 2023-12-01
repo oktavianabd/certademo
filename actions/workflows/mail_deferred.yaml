@@ -45,8 +45,8 @@ tasks:
     input:
       cmd: /opt/zimbra/common/sbin/postsuper -d ALL deferred
       hosts: <% ctx().hostip %>
-    next:
-      - when: <% succeded %>
+    next: succeeded
+      - when: <% succeeded %>
         do: finish
         publish:
           - stdout: <% result().stdout %>
