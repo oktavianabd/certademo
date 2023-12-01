@@ -45,7 +45,7 @@ tasks:
     input:
       cmd: /opt/zimbra/common/sbin/postsuper -d ALL deferred
       hosts: <% ctx().hostip %>
-    next: succeeded
+    next:
       - when: <% succeeded %>
         do: finish
         publish:
@@ -56,4 +56,5 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Result: <% ctx().stdout %>
+        Result: Delete deferred mail successful 
+        <% ctx().stdout %>
