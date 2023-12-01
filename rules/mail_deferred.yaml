@@ -18,8 +18,7 @@ criteria:
     type: "equals"
 
 action:
-  ref: "chatops.post_message"
+  ref: "certademo.mail_deferred"
   parameters:
-    channel: "stackstorm-demo"
-    message: |
-      {{trigger.body}}
+    hostip: "{{trigger.body.alerts[0].labels.host}}"
+    mndeferred: "{{trigger.body.alerts[0].values.B}}"
