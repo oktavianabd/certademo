@@ -27,7 +27,7 @@ tasks:
           approved:
             type: boolean
             description: "Do you want to switchover the service"
-            required: True
+            required: true
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
         do: switchover
@@ -46,7 +46,7 @@ tasks:
   checkjobstatus:
     action: 
     input:
-      cmd: core.remote_sudo cmd="nomad job status -address=http://10.63.20.226:4646 -namespace=app statping"
+      cmd: nomad job status -address=http://10.63.20.226:4646 -namespace=app statping
       hosts: 10.63.20.226
     next:
       - when: <% succeeded %>
