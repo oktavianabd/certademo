@@ -45,19 +45,18 @@ tasks:
     action: core.remote_sudo cmd="nmcli connection up con-eth0" hosts=10.63.20.4
     next:
       - when: <% succeeded %>
-        do: checkjobstatus
-  
-  checkjobstatus:
-    action: core.remote_sudo
-    input:
-      cmd: nomad job status -address=http://10.63.20.226:4646 -namespace=app statping
-      hosts: <% ctx().nomad_server %>
-    next:
-      - when: <% succeeded %>
         do: finish
-        publish:
-          - stdout: <% result().get(ctx().nomad_server).stdout %>
-          
+  
+  # checkjobstatus:
+  #   action: core.remote_sudo
+  #   input:
+  #     cmd: nomad job status -address=http://10.63.20.226:4646 -namespace=app statping
+  #     hosts: <% ctx().nomad_server %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: finish
+  #       publish:
+  #         - stdout: <% result().get(ctx().nomad_server).stdout %>
 
   finish:
     action: chatops.post_message
@@ -65,4 +64,3 @@ tasks:
       channel: stackstorm-demo
       message: |
         Switchover completed
-        <% ctx().stdout %>
