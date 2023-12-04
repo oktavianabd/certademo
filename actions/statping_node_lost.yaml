@@ -1,0 +1,13 @@
+---
+name: "statping_node_lost"
+pack: "certademo"
+description: "handle statping node lost"
+runner_type: "orquesta"
+entry_point: "workflows/statping_node_lost.yaml"
+enabled: true
+
+parameters:
+  node_name:
+    type: "string"
+    description: "name of the node down"
+    required: true
