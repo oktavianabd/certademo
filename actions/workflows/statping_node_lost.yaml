@@ -5,9 +5,10 @@ description: handle node lost of statping approval
 
 input:
  - node_name
- - nomad_server
-vars:
-  - nomadserver
+ - nomad_server 
+
+output:
+  - stdout: <% ctx(stdout) %>
 
 tasks:
   notify:
@@ -53,11 +54,12 @@ tasks:
       hosts: <% ctx().nomad_server %>
     next:
       - when: <% succeeded %>
-        do: success
+        do: finish
         publish:
-          - stdout: <% result().get(ctx().nomad_server).stdout) %>
+          - stdout: <% result().get(ctx().nomad_server).stdout %>
+          
 
-  success:
+  finish:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
