@@ -17,6 +17,7 @@ tasks:
     next:
       when: <% succeeded %>
       do: get_approval
+
   get_approval:
     action: core.ask
     input:
@@ -48,7 +49,7 @@ tasks:
       cmd: core.remote_sudo cmd="nomad job status -address=http://10.63.20.226:4646 -namespace=app statping"
       hosts: 10.63.20.226
     next:
-      - when: <% succeeded() %>
+      - when: <% succeeded %>
         do: success
         publish:
           - stdout: <% result().get(ctx().10.63.20.226.stdout) %>
