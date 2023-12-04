@@ -7,8 +7,8 @@ input:
  - node_name
  - nomad_server 
 
-output:
-  - stdout: <% ctx(stdout) %>
+# output:
+#   - stdout: <% ctx(stdout) %>
 
 tasks:
   notify:
