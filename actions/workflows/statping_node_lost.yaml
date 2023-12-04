@@ -6,6 +6,9 @@ description: handle node lost of statping approval
 input:
  - node_name
 
+vars:
+  - nomadserver
+
 tasks:
   notify:
     action: chatops.post_message
@@ -44,7 +47,7 @@ tasks:
         do: checkjobstatus
   
   checkjobstatus:
-    action: 
+    action: core.remote_sudo
     input:
       cmd: nomad job status -address=http://10.63.20.226:4646 -namespace=app statping
       hosts: 10.63.20.226
@@ -52,7 +55,7 @@ tasks:
       - when: <% succeeded %>
         do: success
         publish:
-          - stdout: <% result().get(ctx().10.63.20.226).stdout) %>
+          - stdout: <% result().get(ctx().hosts).stdout) %>
 
   success:
     action: chatops.post_message
