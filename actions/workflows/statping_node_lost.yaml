@@ -67,3 +67,4 @@ tasks:
       channel: stackstorm-demo
       message: |
         Switchover completed
+        <% ctx().stdout %>
