@@ -55,7 +55,7 @@ tasks:
       - when: <% succeeded %>
         do: success
         publish:
-          - stdout: <% result().get(ctx().hosts).stdout) %>
+          - stdout: <% result().stdout) %>
 
   success:
     action: chatops.post_message
