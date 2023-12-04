@@ -42,7 +42,10 @@ tasks:
     action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
 
   switchover:
-    action: core.remote_sudo cmd="nmcli connection up con-eth0" hosts=10.63.20.4
+    action: core.remote_sudo
+    input:
+      cmd: nmcli connection up con-eth0
+      hosts: 10.63.20.4
     next:
       - when: <% succeeded %>
         do: finish
