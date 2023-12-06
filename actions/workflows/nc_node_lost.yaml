@@ -93,7 +93,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stdout_01 %>
-        Result: Rebuilding nextcloud 1/5
+        Status: Install nextcloud dependencies 1/5 completed
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_02
@@ -120,7 +120,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stdout_02 %>
-        Result: Rebuilding nextcloud 2/5
+        Status: Install nextcloud dependencies 2/5 completed
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_03
@@ -147,7 +147,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stdout_03 %>
-        Result: Rebuilding nextcloud 3/5
+        Status: Install nextcloud dependencies 3/5 completed
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_04
@@ -174,7 +174,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stdout_04 %>
-        Result: Rebuilding nextcloud 4/5
+        Status: Install nextcloud dependencies 4/5 completed
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_05
@@ -220,7 +220,8 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stdout_05 %>
-        Result: Rebuilding nextcloud 5/5, successful.
+        Status: Install nextcloud dependencies 5/5 completed.
+        Result: Rebuild nextcloud successful.
 
   #     Nextcloud HTTP response status: <% ctx().curl_result %>
 
