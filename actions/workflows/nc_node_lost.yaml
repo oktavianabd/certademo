@@ -1,0 +1,91 @@
+---
+version: 1.0
+name: "nc_node_lost"
+description: handle node lost of nextcloud
+
+input:
+ - node_name
+ - nomad_server 
+
+tasks:
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Alert: Node <% ctx().node_name %> of nextcloud service is lost
+        Do you want to rebuild to the service?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: "Do you want to switchover the service"
+            required: true
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: start
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+
+  start:
+    action: core.remote_sudo
+    input:
+      cmd: nmcli connection up con-eth0
+      hosts: 10.63.20.4
+    next:
+      - when: <% succeeded %>
+        do: rebuild_nc
+  
+  rebuild_nc:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud.yml
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: success
+        publish:
+          - stdout: <% result().stdout %>
+  
+  failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %>
+        Result: Run ansible playbook failure, rebuild nextcloud failure, please check the playbook file
+        Thank you
+  
+  test_httpd:
+    action: core.local
+    input:
+      cmd: curl -I -s http://10.63.20.231/index.php/login | head -n 1
+    next:
+      - when: <% succeeded() %>
+        do: success
+        publish:
+          - curl_result: <% result().stdout %>
+
+  success:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout %>
+        Result: Great! Rebuild nextcloud complete"
+        Nextcloud HTTP response status: <% ctx().curl_result %>
+
