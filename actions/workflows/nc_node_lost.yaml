@@ -87,5 +87,5 @@ tasks:
       message: |
         <% ctx().stdout %>
         Result: Great! Rebuild nextcloud complete"
-        # Nextcloud HTTP response status: <% ctx().curl_result %>
+#        Nextcloud HTTP response status: <% ctx().curl_result %>
 
