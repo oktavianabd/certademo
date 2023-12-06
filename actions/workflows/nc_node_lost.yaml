@@ -40,10 +40,10 @@ tasks:
       channel: stackstorm-demo
       message: |
         Alert: Node <% ctx().node_name %> of nextcloud service is lost
-        Do you want to rebuild to the service?
+        Do you want to rebuild to the service to worker-3?
     next:
       - when: <% succeeded %>
-        do: check_node3
+        do: get_approval
 
   get_approval:
     action: core.ask
