@@ -39,7 +39,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Alert: Node <% ctx().node_name %> of nextcloud service is lost
+        Alert: One of nodes of the nextcloud service is lost
         Do you want to rebuild the service to worker-3?
     next:
       - when: <% succeeded %>
