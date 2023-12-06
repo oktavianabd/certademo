@@ -29,5 +29,6 @@ action:
   parameters:
     channel: "stackstorm-demo"
     message: |
+      Result
       {{trigger.body.alerts[0].labels.nomad_server}}
       {{trigger.body.alerts[0].labels.worker_3}}
