@@ -17,18 +17,18 @@ criteria:
     pattern: "firing"
     type: "equals"
 
-# action:
-#   ref: "certademo.nc_node_lost"
-#   parameters:
-#     # node_name: "{{trigger.body.alerts[0].labels.node_name}}"
-#     nomad_server: "{{trigger.body.alerts[0].labels.nomad_server}}"
-#     worker_3: "{{trigger.body.alerts[0].labels.worker_3}}"
-
 action:
-  ref: "chatops.post_message"
+  ref: "certademo.nc_node_lost"
   parameters:
-    channel: "stackstorm-demo"
-    message: |
-      Result
-      {{trigger.body.alerts[0].labels.nomad_server}}
-      {{trigger.body.alerts[0].labels.worker_3}}
+    # node_name: "{{trigger.body.alerts[0].labels.node_name}}"
+    nomad_server: "{{trigger.body.alerts[0].labels.nomad_server}}"
+    worker_3: "{{trigger.body.alerts[0].labels.worker_3}}"
+
+# action:
+#   ref: "chatops.post_message"
+#   parameters:
+#     channel: "stackstorm-demo"
+#     message: |
+#       Result
+#       {{trigger.body.alerts[0].labels.nomad_server}}
+#       {{trigger.body.alerts[0].labels.worker_3}}
