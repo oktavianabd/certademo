@@ -11,7 +11,7 @@ trigger:
 
 criteria:
   trigger.body.alerts[0].labels.alertname:
-    pattern: "NodeLost_worker3"
+    pattern: "NodeLost_w1_or_w2"
     type: "equals"
   trigger.body.alerts[0].status:
     pattern: "firing"
@@ -22,3 +22,4 @@ action:
   parameters:
     node_name: "{{trigger.body.alerts[0].labels.node_name}}"
     nomad_server: "{{trigger.body.alerts[0].labels.nomad_server}}"
+    worker_3: "{{trigger.body.alerts[0].labels.worker_3}}"

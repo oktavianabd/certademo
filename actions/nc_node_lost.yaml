@@ -14,3 +14,6 @@ parameters:
   nomad_server:
     type: "string"
     description: "ip address of nomadserver"
+  worker_3:
+    type: "string"
+    description: "ip address of worker_3"
