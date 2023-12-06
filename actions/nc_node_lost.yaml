@@ -14,6 +14,8 @@ parameters:
   nomad_server:
     type: "string"
     description: "ip address of nomadserver"
+    required: true
   worker_3:
     type: "string"
     description: "ip address of worker_3"
+    required: true
