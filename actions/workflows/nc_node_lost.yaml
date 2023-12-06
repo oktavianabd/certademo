@@ -76,7 +76,7 @@ tasks:
   rebuild_nc:
     action: ansible.playbook
     input:
-      playbook: /etc/ansible/install-nextcloud.yml
+      playbook: /etc/ansible/playbook.yaml
     next:
       - when: <% failed() %>
         do: failure
