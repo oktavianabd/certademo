@@ -7,6 +7,9 @@ input:
  - node_name
  - nomad_server 
 
+output:
+  - stdout: <% ctx(stdout) %>
+
 tasks:
   notify:
     action: chatops.post_message
