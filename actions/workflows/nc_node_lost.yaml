@@ -4,7 +4,7 @@ name: "nc_node_lost"
 description: handle node lost of nextcloud
 
 input:
-  - node_name
+  # - node_name
   - nomad_server 
   - worker_3
 
