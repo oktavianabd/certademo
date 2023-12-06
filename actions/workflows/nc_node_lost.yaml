@@ -70,15 +70,15 @@ tasks:
         Result: Run ansible playbook failure, rebuild nextcloud failure, please check the playbook file
         Thank you
   
-  # test_httpd:
-  #   action: core.local
-  #   input:
-  #     cmd: curl -I -s http://10.63.20.231/index.php/login | head -n 1
-  #   next:
-  #     - when: <% succeeded() %>
-  #       do: success
-  #       publish:
-  #         - curl_result: <% result().stdout %>
+  test_httpd:
+    action: core.local
+    input:
+      cmd: curl -I -s http://10.63.20.231/index.php/login | head -n 1
+    next:
+      - when: <% succeeded() %>
+        do: success
+        publish:
+          - curl_result: <% result().stdout %>
 
   success:
     action: chatops.post_message 
@@ -87,5 +87,5 @@ tasks:
       message: |
         <% ctx().stdout %>
         Result: Great! Rebuild nextcloud complete"
-#        Nextcloud HTTP response status: <% ctx().curl_result %>
+        Nextcloud HTTP response status: <% ctx().curl_result %>
 
