@@ -10,6 +10,7 @@ parameters:
   # node_name:
   #   type: "string"
   #   description: "name of the node down"
+  #   required: true
   nomad_server:
     type: "string"
     description: "ip address of nomadserver"
