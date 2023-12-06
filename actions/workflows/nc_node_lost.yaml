@@ -111,8 +111,8 @@ tasks:
           - stderr: <% result().stderr %>
       - when: <% succeeded() %>
         do: post_rebuild_nc_02
-        # publish:
-        #   - stdout_02: <% result().stdout %>
+        publish:
+          - stdout_02: <% result().stdout %>
   
   post_rebuild_nc_02:
     action: chatops.post_message 
