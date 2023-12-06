@@ -221,7 +221,7 @@ tasks:
       message: |
         <% ctx().stdout_05 %>
         Status: Install nextcloud dependencies 5/5 completed.
-        Result: Rebuild nextcloud successful.
+        Result: Rebuild nextcloud on worker-3 successful.
 
   #     Nextcloud HTTP response status: <% ctx().curl_result %>
 
