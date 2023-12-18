@@ -123,8 +123,7 @@ tasks:
       - when: <% succeeded() %>
         do: failure
         # publish:
-        #   - stdout_01: <% result().stdout %> 
-
+        #   - stdout_01: <% result().stdout %>
 
   rebuild_nc_01:
     action: ansible.playbook
