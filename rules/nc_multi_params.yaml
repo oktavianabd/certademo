@@ -1,5 +1,5 @@
 ---
-name: "test_webhook"
+name: "nc_multi_params"
 pack: "certademo"
 description: "test webhook for demo purpose"
 enabled: true
