@@ -3,7 +3,7 @@ name: "nc_node_lost"
 pack: "certademo"
 description: "handle nextcloud node lost"
 runner_type: "orquesta"
-entry_point: "workflows/nc_node_lost.yaml"
+entry_point: "workflows/nc_node_lost_with_provisioning_vm.yaml"
 enabled: true
 
 parameters:
@@ -18,4 +18,4 @@ parameters:
   worker_3:
     type: "string"
     description: "ip address of worker_3"
-    required: true
+    required: false
