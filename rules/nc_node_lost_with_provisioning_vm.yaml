@@ -18,7 +18,7 @@ criteria:
     type: "equals"
 
 action:
-  ref: "certademo.nc_node_lost"
+  ref: "certademo.nc_node_lost_with_provisioning_vm"
   parameters:
     # node_name: "{{trigger.body.alerts[0].labels.node_name}}"
     nomad_server: "{{trigger.body.alerts[0].labels.nomad_server}}"

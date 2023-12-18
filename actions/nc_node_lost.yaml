@@ -4,7 +4,7 @@ pack: "certademo"
 description: "handle nextcloud node lost"
 runner_type: "orquesta"
 entry_point: "workflows/nc_node_lost.yaml"
-enabled: false
+enabled: true
 
 parameters:
   # node_name:
