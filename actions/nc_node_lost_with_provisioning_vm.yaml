@@ -1,5 +1,5 @@
 ---
-name: "nc_node_lost"
+name: "nc_node_lost_with_provisioning_vm"
 pack: "certademo"
 description: "handle nextcloud node lost"
 runner_type: "orquesta"
