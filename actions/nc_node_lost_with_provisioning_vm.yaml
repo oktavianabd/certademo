@@ -1,7 +1,7 @@
 ---
 name: "nc_node_lost_with_provisioning_vm"
 pack: "certademo"
-description: "handle nextcloud node lost"
+description: "handle node lost of nextcloud with provisioning the vm"
 runner_type: "orquesta"
 entry_point: "workflows/nc_node_lost_with_provisioning_vm.yaml"
 enabled: true

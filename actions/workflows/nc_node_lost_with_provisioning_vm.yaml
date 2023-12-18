@@ -1,7 +1,7 @@
 ---
 version: 1.0
 name: "nc_node_lost_with_provisioning_vm"
-description: handle node lost of nextcloud
+description: handle node lost of nextcloud with provisioning the vm
 
 input:
   # - node_name

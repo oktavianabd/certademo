@@ -1,7 +1,7 @@
 ---
 name: "nc_node_lost_with_provisioning_vm"
 pack: "certademo"
-description: "lost of one of nextcloud node"
+description: "handle node lost of nextcloud with provisioning the vm"
 enabled: true
 
 trigger:
