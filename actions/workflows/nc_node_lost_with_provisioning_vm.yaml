@@ -74,7 +74,7 @@ tasks:
   #       do: rebuild_nc
 
   provision_vm_01:
-    action: terraform.plan
+    action: terraform.apply
     input:
       plan_path: /root/terraform/tf-certademo-multi-vm
     next:
