@@ -7,7 +7,31 @@ tasks:
     action: core.echo message="Automation started."
     next:
       - when: <% succeeded() %>
-        do: get_approval
+        do: pre_check
+
+  # pre_check:
+  #   next:
+  #     - do:
+  #         - check_php worker_3
+  #         - check_php_worker_4_and_5
+
+  # check_php_worker_3:
+  #   action: core.remote_sudo cmd="systemctl status php-fpm.service | head -n 3 | tail -n 1" hosts="10.63.20.4"
+  #   next:
+  #     - when: <% failed() %>
+  #       do: failure
+  #       publish:
+  #         - stderr_worker03: <% result().error %>
+  #     - when: <% succeeded() %>
+  #       do: post_message
+  #       publish:
+  #         - stdout: <% result().stdout %>
+  #         - stderr: <% result().stderr %>
+
+
+  # check_php_worker_4_and_5:
+  #   action: core.remote_sudo cmd="systemctl status php-fpm.service | head -n 3 | tail -n 1" hosts="10.63.20.4"
+
 
   get_approval:
     action: core.ask
