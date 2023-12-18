@@ -61,7 +61,7 @@ tasks:
             description: "Your message to echo next if you approve to continue:"
       ttl: 60
     next:
-      - when: <% task(get_approval).result.response.containsKey("extra_output") = 2 and task(get_approval).result.response.approved = true %>
+      - when: <% task(get_approval).result.response.containsKey("department_id") = 2 and task(get_approval).result.response.approved = true %>
         publish:
           - custom_output: <% task(get_approval).result.response.extra_output %>
           - approver_department_id: <% task(get_approval).result.response.department_id %>
