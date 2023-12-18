@@ -2,7 +2,7 @@
 name: "nc_node_lost"
 pack: "certademo"
 description: "lost of one of nextcloud node"
-enabled: true
+enabled: false
 
 trigger:
   type: "core.st2.webhook"
