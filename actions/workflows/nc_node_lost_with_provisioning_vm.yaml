@@ -85,7 +85,7 @@ tasks:
       - when: <% succeeded() %>
         do: post_provision_vm_01
         publish:
-          - stdout_prov_vm_01: <% result().result %>
+          - stdout_prov_vm_01: <% result().result.vm_info.value.hostname %>
 
   post_provision_vm_01:
     action: chatops.post_message 
@@ -94,6 +94,7 @@ tasks:
       message: |
         <% ctx().stdout_prov_vm_01 %>
         Status: Provision vm 1/8 completed
+        Waiting for 60 secs for vm to booting.
     next:
       - when: <% succeeded() %>
         do: wait_for_vm_booting
