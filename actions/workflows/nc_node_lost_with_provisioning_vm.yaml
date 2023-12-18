@@ -121,7 +121,7 @@ tasks:
         Status: Provision vm 2/8 completed
     next:
       - when: <% succeeded() %>
-        do: failure
+        do: success
         # publish:
         #   - stdout_01: <% result().stdout %> 
 
