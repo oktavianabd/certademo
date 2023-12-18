@@ -1,0 +1,26 @@
+---
+name: "test_webhook"
+pack: "certademo"
+description: "test webhook for demo purpose"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.name:
+    pattern: "nc_alert_demo"
+    type: "equals"
+
+action:
+  ref: "chatops.post_message"
+  parameters:
+    channel: "stackstorm-demo"
+    message: |
+      Choose action to perform:
+      1. Switch service (auto by nomad)
+      2. Switch service with install dependencies
+      3. Switch service with turn on the vm and install dependencies
+      4. Switch service with provision vm and install dependencies
