@@ -76,7 +76,7 @@ tasks:
   provision_vm_01:
     action: terraform.plan
     input:
-      plan_path="/root/terraform/tf-certademo-multi-vm"
+      plan_path: /root/terraform/tf-certademo-multi-vm
     next:
       - when: <% failed() %>
         do: failure
