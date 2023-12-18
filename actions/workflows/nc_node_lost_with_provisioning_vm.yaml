@@ -1,38 +1,38 @@
 ---
 version: 1.0
-name: "nc_node_lost"
+name: "nc_node_lost_with_provisioning_vm"
 description: handle node lost of nextcloud
 
 input:
   # - node_name
   - nomad_server 
-  - worker_3
+  # - worker_3
 
-output: 
-  - stdout_worker_3: <% ctx(stdout_worker_3) %>
+# output: 
+#   - stdout_worker_3: <% ctx(stdout_worker_3) %>
 
 tasks:
-  check_worker3:
-    action: core.remote_sudo
-    input: 
-      cmd: "systemctl status php-fpm.service | head -n 3 | tail -n 1"
-      hosts: <% ctx().worker_3 %>
-    next:
-      - when: <% succeeded %>
-        do: notify_check_worker_3
-        publish:
-          - stdout_worker_3: <% result().get(ctx().worker_3).stdout %>
+  # check_worker3:
+  #   action: core.remote_sudo
+  #   input: 
+  #     cmd: "systemctl status php-fpm.service | head -n 3 | tail -n 1"
+  #     hosts: <% ctx().worker_3 %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: notify_check_worker_3
+  #       publish:
+  #         - stdout_worker_3: <% result().get(ctx().worker_3).stdout %>
 
-  notify_check_worker_3:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Pre-check, worker-3 status
-        <% ctx().stdout_worker_3 %>
-    next:
-      - when: <% succeeded %>
-        do: notify
+  # notify_check_worker_3:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Pre-check, worker-3 status
+  #       <% ctx().stdout_worker_3 %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: notify
 
   notify:
     action: chatops.post_message
