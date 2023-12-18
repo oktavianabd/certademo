@@ -4,10 +4,18 @@ description: Nexcloud inquiry with multiple parameters.
 
 tasks:
   start:
-    action: core.echo message="Automation started."
-    next:
-      - when: <% succeeded() %>
-        do: pre_check
+    action: chatops.post_message
+    channel: "stackstorm-demo"
+    message: |
+      One of nextcloud node is down
+      Choose one of below action to perform:
+      1. Switch service (auto by nomad)
+      2. Switch service with install dependencies
+      3. Switch service with turn on the vm and install dependencies
+      4. Switch service with provision vm and install dependencies
+    # next:
+    #   - when: <% succeeded() %>
+    #     do: pre_check
 
   # pre_check:
   #   next:
