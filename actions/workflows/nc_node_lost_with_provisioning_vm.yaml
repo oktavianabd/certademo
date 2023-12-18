@@ -73,6 +73,59 @@ tasks:
   #     - when: <% succeeded %>
   #       do: rebuild_nc
 
+  provision_vm_01:
+    action: terraform.apply
+    input:
+      plan_path="/root/terraform/tf-certademo-multi-vm"
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_01
+        publish:
+          - stdout_prov_vm_01: <% result().result %>
+
+  post_provision_vm_01:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_01 %>
+        Status: Provision vm 1/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_02
+
+  provision_vm_02:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-consul.yml
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_02
+        publish:
+          - stdout_prov_vm_02: <% result().stdout %>
+
+  post_provision_vm_02:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_02 %>
+        Status: Provision vm 2/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: failure
+        # publish:
+        #   - stdout_01: <% result().stdout %> 
+
+
   rebuild_nc_01:
     action: ansible.playbook
     input:

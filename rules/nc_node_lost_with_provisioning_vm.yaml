@@ -1,0 +1,34 @@
+---
+name: "nc_node_lost"
+pack: "certademo"
+description: "lost of one of nextcloud node"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "NodeLost_w1_or_w2"
+    type: "equals"
+  trigger.body.alerts[0].status:
+    pattern: "firing"
+    type: "equals"
+
+action:
+  ref: "certademo.nc_node_lost"
+  parameters:
+    # node_name: "{{trigger.body.alerts[0].labels.node_name}}"
+    nomad_server: "{{trigger.body.alerts[0].labels.nomad_server}}"
+    worker_3: "{{trigger.body.alerts[0].labels.worker_3}}"
+
+# action:
+#   ref: "chatops.post_message"
+#   parameters:
+#     channel: "stackstorm-demo"
+#     message: |
+#       Result
+#       {{trigger.body.alerts[0].labels.nomad_server}}
+#       {{trigger.body.alerts[0].labels.worker_3}}

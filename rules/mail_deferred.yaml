@@ -2,7 +2,7 @@
 name: "mail_deferred"
 pack: "certademo"
 description: "mail deferred"
-enabled: true
+enabled: false
 
 trigger:
   type: "core.st2.webhook"
