@@ -61,17 +61,17 @@ tasks:
       ttl: 60
     next:
       - when: <% task(get_approval).result.response.containsKey("department_id") = 2 and task(get_approval).result.response.approved = true %>
-        publish:
-          - custom_output: <% task(get_approval).result.response.extra_output %>
-          - approver_department_id: <% task(get_approval).result.response.department_id %>
+        # publish:
+        #   - custom_output: <% task(get_approval).result.response.extra_output %>
+        #   - approver_department_id: <% task(get_approval).result.response.department_id %>
         do: action_2_install_dependencies
       - when: <% task(get_approval).result.response.containsKey("department_id") = 3 and task(get_approval).result.response.approved = true %>
-        publish:
-          - approver_department_id: <% task(get_approval).result.response.department_id %>
+        # publish:
+        #   - approver_department_id: <% task(get_approval).result.response.department_id %>
         do: action_3_turn_on_vm_and_install_dependencies
       - when: <% task(get_approval).result.response.containsKey("department_id") = 4 %>
-        publish:
-          - approver_department_id: <% task(get_approval).result.response.department_id %>
+        # publish:
+        #   - approver_department_id: <% task(get_approval).result.response.department_id %>
         do: action_4_turn_on_vm_and_install_dependencies
       - when: <% task(get_approval).result.response.approved = false %>
         do: stop
