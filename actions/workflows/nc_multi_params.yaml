@@ -87,10 +87,10 @@ tasks:
   # finish:
   #   action: core.echo message="Approved by department <% ctx('approver_department_id') %>. Automation completed."
 
-  # stop:
-  #   action: core.echo message="Automation stopped."
-  #   next:
-  #     - do: fail
+  stop:
+    action: core.echo message="Automation stopped."
+    next:
+      - do: fail
 
   #   next:
   #     - when: <% task(get_approval).result.response.containsKey("department_id") = 2 and task(get_approval).result.response.approved = true %>
