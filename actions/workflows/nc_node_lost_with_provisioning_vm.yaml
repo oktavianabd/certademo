@@ -57,7 +57,7 @@ tasks:
             required: true
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
-        do: rebuild_nc_01
+        do: provision_vm_01
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
 
