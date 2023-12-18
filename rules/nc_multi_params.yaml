@@ -19,6 +19,7 @@ action:
   parameters:
     channel: "stackstorm-demo"
     message: |
+      One of nextcloud node is down
       Choose action to perform:
       1. Switch service (auto by nomad)
       2. Switch service with install dependencies
