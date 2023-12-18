@@ -64,15 +64,6 @@ tasks:
   stop:
     action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
 
-  # start:
-  #   action: core.remote_sudo
-  #   input:
-  #     cmd: nmcli connection up con-eth0
-  #     hosts: 10.63.20.4
-  #   next:
-  #     - when: <% succeeded %>
-  #       do: rebuild_nc
-
   provision_vm_01:
     action: terraform.apply
     input:
@@ -93,7 +84,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Status: Vm <% ctx().stdout_prov_vm_01 %> has been created.
-        Waiting for 30 secs for vm to booting.
+        Waiting for 30 secs for vm to boot and configure initial setup.
     next:
       - when: <% succeeded() %>
         do: wait_for_vm_booting
@@ -316,8 +307,6 @@ tasks:
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_02
-        # publish:
-        #   - stdout_01: <% result().stdout %>
 
   rebuild_nc_02:
     action: ansible.playbook
@@ -343,8 +332,6 @@ tasks:
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_03
-        # publish:
-        #   - stdout_01: <% result().stdout %>
 
   rebuild_nc_03:
     action: ansible.playbook
@@ -370,8 +357,6 @@ tasks:
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_04
-        # publish:
-        #   - stdout_01: <% result().stdout %>
 
   rebuild_nc_04:
     action: ansible.playbook
@@ -397,8 +382,6 @@ tasks:
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_05
-        # publish:
-        #   - stdout_01: <% result().stdout %>
 
   rebuild_nc_05:
     action: ansible.playbook
@@ -440,7 +423,7 @@ tasks:
       message: |
         <% ctx().stdout_05 %>
         Status: Install nextcloud dependencies 5/5 completed.
-        Result: Rebuild nextcloud on worker-3 successful.
+        Result: Rebuild nextcloud on <% ctx().stdout_prov_vm_01 %> successful.
 
   #     Nextcloud HTTP response status: <% ctx().curl_result %>
 

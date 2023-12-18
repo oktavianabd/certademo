@@ -22,7 +22,7 @@ action:
   parameters:
     # node_name: "{{trigger.body.alerts[0].labels.node_name}}"
     nomad_server: "{{trigger.body.alerts[0].labels.nomad_server}}"
-    worker_3: "{{trigger.body.alerts[0].labels.worker_3}}"
+    # worker_3: "{{trigger.body.alerts[0].labels.worker_3}}"
 
 # action:
 #   ref: "chatops.post_message"
