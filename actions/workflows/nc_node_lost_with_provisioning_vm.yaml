@@ -40,7 +40,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         Alert: One of nodes of the nextcloud service is lost
-        Do you want to rebuild the service to worker-3?
+        Do you want to rebuild the service?
     next:
       - when: <% succeeded %>
         do: get_approval
