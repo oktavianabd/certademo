@@ -65,24 +65,56 @@ tasks:
         publish:
           - custom_output: <% task(get_approval).result.response.extra_output %>
           - approver_department_id: <% task(get_approval).result.response.department_id %>
-        do: echo_extra_message
-      - when: <% not task(get_approval).result.response.containsKey("extra_output") and task(get_approval).result.response.approved = true %>
+        do: action_2_install_dependencies
+      - when: <% task(get_approval).result.response.containsKey("department_id") = 3 and task(get_approval).result.response.approved = true %>
         publish:
           - approver_department_id: <% task(get_approval).result.response.department_id %>
-        do: finish
+        do: action_3_turn_on_vm_and_install_dependencies
+      - when: <% task(get_approval).result.response.containsKey("department_id") = 4 and task(get_approval).result.response.approved = true %>
+        publish:
+          - approver_department_id: <% task(get_approval).result.response.department_id %>
+        do: action_4_turn_on_vm_and_install_dependencies
       - when: <% task(get_approval).result.response.approved = false %>
         do: stop
 
-  echo_extra_message:
-    action: core.echo message="Extra info <% ctx('custom_output') %>."
-    next:
-      - when: <% succeeded() %>
-        do: finish
+  action_2_install_dependencies:
+    action: core.echo message="Peform action 2"
+  action_3_turn_on_vm_and_install_dependencies:
+    action: core.echo message="Peform action 3"
+  action_4_turn_on_vm_and_install_dependencies:
+    action: core.echo message="Peform action 4"
 
-  finish:
-    action: core.echo message="Approved by department <% ctx('approver_department_id') %>. Automation completed."
+  # finish:
+  #   action: core.echo message="Approved by department <% ctx('approver_department_id') %>. Automation completed."
 
-  stop:
-    action: core.echo message="Automation stopped."
-    next:
-      - do: fail
+  # stop:
+  #   action: core.echo message="Automation stopped."
+  #   next:
+  #     - do: fail
+
+  #   next:
+  #     - when: <% task(get_approval).result.response.containsKey("department_id") = 2 and task(get_approval).result.response.approved = true %>
+  #       publish:
+  #         - custom_output: <% task(get_approval).result.response.extra_output %>
+  #         - approver_department_id: <% task(get_approval).result.response.department_id %>
+  #       do: echo_extra_message
+  #     - when: <% not task(get_approval).result.response.containsKey("extra_output") and task(get_approval).result.response.approved = true %>
+  #       publish:
+  #         - approver_department_id: <% task(get_approval).result.response.department_id %>
+  #       do: finish
+  #     - when: <% task(get_approval).result.response.approved = false %>
+  #       do: stop
+
+  # echo_extra_message:
+  #   action: core.echo message="Extra info <% ctx('custom_output') %>."
+  #   next:
+  #     - when: <% succeeded() %>
+  #       do: finish
+
+  # finish:
+  #   action: core.echo message="Approved by department <% ctx('approver_department_id') %>. Automation completed."
+
+  # stop:
+  #   action: core.echo message="Automation stopped."
+  #   next:
+  #     - do: fail
