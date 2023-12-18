@@ -51,7 +51,6 @@ tasks:
           approved:
             type: boolean
             description: "Continue?"
-            required: True
           department_id:
             type: number
             description: "Your department ID:"
@@ -70,7 +69,7 @@ tasks:
         publish:
           - approver_department_id: <% task(get_approval).result.response.department_id %>
         do: action_3_turn_on_vm_and_install_dependencies
-      - when: <% task(get_approval).result.response.containsKey("department_id") = 4 and task(get_approval).result.response.approved = true %>
+      - when: <% task(get_approval).result.response.containsKey("department_id") = 4 %>
         publish:
           - approver_department_id: <% task(get_approval).result.response.department_id %>
         do: action_4_turn_on_vm_and_install_dependencies
