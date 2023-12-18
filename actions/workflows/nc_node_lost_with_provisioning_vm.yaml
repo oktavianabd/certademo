@@ -90,7 +90,7 @@ tasks:
         do: wait_for_vm_booting
 
   wait_for_vm_booting:
-    action: core.pause max_pause=30
+    action: core.pause max_pause=60
     next:
       - when: <% succeeded() %>
         do: post_wait_for_vm_booting
