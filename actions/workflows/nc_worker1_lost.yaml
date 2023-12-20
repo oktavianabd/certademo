@@ -67,7 +67,7 @@ tasks:
     action: ansible.playbook
     input:
       playbook: /etc/ansible/install-nextcloud-p1.yml
-      extra_vars: [variable_host=worker-3]
+      extra_vars: ["variable_host=worker-3"]
     next:
       - when: <% failed() %>
         do: failure
