@@ -93,7 +93,7 @@ tasks:
     action: ansible.playbook
     input:
       playbook: /etc/ansible/install-nextcloud-p2.yml
-      extra_vars: "variable_host=worker-3"
+      extra_vars: [variable_host=worker-3]
     next:
       - when: <% failed() %>
         do: failure
@@ -119,7 +119,7 @@ tasks:
     action: ansible.playbook
     input:
       playbook: /etc/ansible/install-nextcloud-p3.yml
-      extra_vars: variable_host=worker-3
+      extra_vars: [variable_host=worker-3]
     next:
       - when: <% failed() %>
         do: failure
@@ -145,7 +145,7 @@ tasks:
     action: ansible.playbook
     input:
       playbook: /etc/ansible/install-nextcloud-p4.yml
-      extra_vars: variable_host=worker-3
+      extra_vars: [variable_host=worker-3]
     next:
       - when: <% failed() %>
         do: failure
@@ -171,7 +171,7 @@ tasks:
     action: ansible.playbook
     input:
       playbook: /etc/ansible/install-nextcloud-p5.yml
-      extra_vars: variable_host=worker-3
+      extra_vars: [variable_host=worker-3]
     next:
       - when: <% failed() %>
         do: failure
