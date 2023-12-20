@@ -1,0 +1,23 @@
+---
+name: "nc_worker3_lost"
+pack: "certademo"
+description: "worker3 of nextcloud is lost"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "NodeLost_w3"
+    type: "equals"
+  trigger.body.alerts[0].status:
+    pattern: "firing"
+    type: "equals"
+
+action:
+  ref: "certademo.nc_worker3_lost"
+  parameters:
+    nomad_server: "{{trigger.body.alerts[0].labels.nomad_server}}"

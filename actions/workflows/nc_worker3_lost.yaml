@@ -1,0 +1,441 @@
+---
+version: 1.0
+name: "nc_worker3_lost"
+description: handle nextcloud worker3 lost, it will provision new worker5 and install dependencies on worker5
+
+input:
+  - nomad_server 
+#   - worker_3
+
+# output: 
+#   - stdout_worker_3: <% ctx(stdout_worker_3) %>
+
+tasks:
+  # check_worker3:
+  #   action: core.remote_sudo
+  #   input: 
+  #     cmd: "systemctl status php-fpm.service | head -n 3 | tail -n 1"
+  #     hosts: <% ctx().worker_3 %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: notify_check_worker_3
+  #       publish:
+  #         - stdout_worker_3: <% result().get(ctx().worker_3).stdout %>
+
+  # notify_check_worker_3:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Pre-check, worker-3 status
+  #       <% ctx().stdout_worker_3 %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: notify
+
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Alert: The nextcloud service on worker-3 is lost
+        Do you want to rebuild the service to worker-5?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+
+
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: "Do you want to switchover the service"
+            required: true
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: provision_vm_01
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+
+  provision_vm_01:
+    action: terraform.apply
+    input:
+      plan_path: /root/terraform/tf-certademo-worker-5
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_01
+        publish:
+          - stdout_prov_vm_01: <% result().result.vm_info.value.hostname %>
+
+  post_provision_vm_01:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        Status: Vm <% ctx().stdout_prov_vm_01 %> has been created.
+        Waiting for 120 secs for vm to boot and configure initial setup.
+    next:
+      - when: <% succeeded() %>
+        do: wait_for_vm_booting
+
+  wait_for_vm_booting:
+    action: core.pause max_pause=120
+    next:
+      - when: <% succeeded() %>
+        do: post_wait_for_vm_booting
+        publish:
+          - stdout_wait_prov_vm_01: <% result().result %>
+
+  post_wait_for_vm_booting:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        Status: VMs is up. Provision vm 1/8 completed.
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_02
+
+  provision_vm_02:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-consul.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_02
+        publish:
+          - stdout_prov_vm_02: <% result().stdout %>
+
+  post_provision_vm_02:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_02 %>
+        Status: Provision vm 2/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_03
+
+  provision_vm_03:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/consul-client-config.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_03
+        publish:
+          - stdout_prov_vm_03: <% result().stdout %>
+
+  post_provision_vm_03:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_03 %>
+        Status: Provision vm 3/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_04
+
+  provision_vm_04:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/consul-tls.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_04
+        publish:
+          - stdout_prov_vm_04: <% result().stdout %>
+
+  post_provision_vm_04:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_04 %>
+        Status: Provision vm 4/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_05
+
+  provision_vm_05:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nomad.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_05
+        publish:
+          - stdout_prov_vm_05: <% result().stdout %>
+
+  post_provision_vm_05:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_05 %>
+        Status: Provision vm 5/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_06
+
+  provision_vm_06:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/nomad-client-config.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_06
+        publish:
+          - stdout_prov_vm_06: <% result().stdout %>
+
+  post_provision_vm_06:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_06 %>
+        Status: Provision vm 6/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_07
+
+  provision_vm_07:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/dnsmasq.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_07
+        publish:
+          - stdout_prov_vm_07: <% result().stdout %>
+
+  post_provision_vm_07:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_07 %>
+        Status: Provision vm 7/8 completed
+    next:
+      - when: <% succeeded() %>
+        do: provision_vm_08
+
+  provision_vm_08:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/config-dns.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_provision_vm_08
+        publish:
+          - stdout_prov_vm_08: <% result().stdout %>
+
+  post_provision_vm_08:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_prov_vm_08 %>
+        Status: Provision vm 8/8 completed
+        Continue for installing nexcloud dependencies.
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_01
+
+  rebuild_nc_01:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p1.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_01
+        publish:
+          - stdout_01: <% result().stdout %>
+
+  post_rebuild_nc_01:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_01 %>
+        Status: Install nextcloud dependencies 1/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_02
+
+  rebuild_nc_02:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p2.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_02
+        publish:
+          - stdout_02: <% result().stdout %>
+  
+  post_rebuild_nc_02:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_02 %>
+        Status: Install nextcloud dependencies 2/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_03
+
+  rebuild_nc_03:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p3.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_03
+        publish:
+          - stdout_03: <% result().stdout %>
+
+  post_rebuild_nc_03:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_03 %>
+        Status: Install nextcloud dependencies 3/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_04
+
+  rebuild_nc_04:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p4.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_04
+        publish:
+          - stdout_04: <% result().stdout %>
+  
+  post_rebuild_nc_04:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_04 %>
+        Status: Install nextcloud dependencies 4/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_05
+
+  rebuild_nc_05:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p5.yml
+      extra_vars: [variable_host=worker-5]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: success
+        publish:
+          - stdout_05: <% result().stdout %>
+
+  failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %>
+        Result: Run ansible playbook or terraform failure, rebuild nextcloud failure, please check the playbook file
+        Thank you
+
+  # test_httpd:
+  #   action: core.local
+  #   input:
+  #     cmd: curl -I -s http://10.63.20.231/index.php/login | head -n 1
+  #   next:
+  #     - when: <% succeeded() %>
+  #       do: success
+  #       publish:
+  #         - curl_result: <% result().stdout %>
+
+  success:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_05 %>
+        Status: Install nextcloud dependencies 5/5 completed.
+        Result: Rebuild nextcloud on worker-5 successful.
+
+  #     Nextcloud HTTP response status: <% ctx().curl_result %>
+
