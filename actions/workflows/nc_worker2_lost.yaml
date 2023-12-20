@@ -56,7 +56,7 @@ tasks:
             required: true
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
-        do: rebuild_nc_01
+        do: turn_on_worker4
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
 
