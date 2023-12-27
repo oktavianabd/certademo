@@ -83,13 +83,13 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().stdout_01 %>
-        Status: Turning on worker-4, wait 120 secs for booting up.
+        Status: Turning on worker-4, wait 180 secs for booting up.
     next:
       - when: <% succeeded() %>
         do: wait_for_worker4_booting
 
   wait_for_worker4_booting:
-    action: core.pause max_pause=120
+    action: core.pause max_pause=180
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_01

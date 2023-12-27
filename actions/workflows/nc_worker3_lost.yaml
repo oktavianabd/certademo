@@ -84,13 +84,13 @@ tasks:
       channel: stackstorm-demo
       message: |
         Status: Vm <% ctx().stdout_prov_vm_01 %> has been created.
-        Waiting for 120 secs for vm to boot and configure initial setup.
+        Waiting for 180 secs for vm to boot and configure initial setup.
     next:
       - when: <% succeeded() %>
         do: wait_for_vm_booting
 
   wait_for_vm_booting:
-    action: core.pause max_pause=120
+    action: core.pause max_pause=180
     next:
       - when: <% succeeded() %>
         do: post_wait_for_vm_booting
