@@ -27,7 +27,7 @@ tasks:
         do: stop
 
   finish:
-    action: core.echo message="Approved, Automation completed. <% ctx(st2).action_execution_id %>"
+    action: core.echo message="Approved, Automation completed. <% ctx(get_approval).action_execution_id %>"
 
   stop:
     action: core.echo message="Un-approved, Automation stopped."
