@@ -1,0 +1,20 @@
+---
+name: "newticket_jirav2"
+pack: "certademo"
+description: "handle if there is new ticket created from jira API v2"
+enabled: true
+
+trigger:
+  type: jira.JIRASensorForAPIv2
+
+criteria: {}
+
+action:
+  ref: "core.local"
+  parameters:
+    message: |
+      Receive new ticket from jira
+      {{trigger}}
+      Trigger id: {{trigger.id}}
+      Trigger url: {{trigger.issue_url}}
+      Trigger expand: {{trigger.expand}}
