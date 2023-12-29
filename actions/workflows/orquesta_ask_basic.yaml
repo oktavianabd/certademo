@@ -31,7 +31,16 @@ tasks:
     input:
       message: |
         Approved, Automation completed
-        <% task(get_approval).action_execution_id %>
+        <% task("get_approval").task_execution_id %>
+        <% task("get_approval").workflow_execution_id %>
+        <% task("get_approval").task_name %>
+        <% task("get_approval").result %>
+        <% task("get_approval").status %>
+        <% task("get_approval").start_timestamp %>
+        <% task("get_approval").end_timestamp %>
+        <% task("get_approval").action_execution_id %>
+
+
 
   stop:
     action: core.echo message="Un-approved, Automation stopped."
