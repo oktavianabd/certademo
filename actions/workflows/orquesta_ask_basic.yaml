@@ -31,15 +31,15 @@ tasks:
     input:
       message: |
         Approved, Automation completed
-        <% task("finish").task_execution_id %>
-        <% task("finish").workflow_execution_id %>
-        <% task("finish").task_name %>
-        <% task("finish").task_id %>
-        <% task("finish").route %>
-        <% task("finish").result %>
-        <% task("finish").status %>
-        <% task("finish").start_timestamp %>
-        <% task("finish").end_timestamp %>
+        <% task("start").task_execution_id %>
+        <% task("start").workflow_execution_id %>
+        <% task("start").task_name %>
+        <% task("start").task_id %>
+        <% task("start").route %>
+        <% task("start").result %>
+        <% task("start").status %>
+        <% task("start").start_timestamp %>
+        <% task("start").end_timestamp %>
        # <% st2kv('task("get_approval").task_execution_id', decrypt=>true) %> 
        # <% task("get_approval").action_execution_id %>
 
