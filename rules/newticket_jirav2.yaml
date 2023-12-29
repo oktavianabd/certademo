@@ -15,7 +15,9 @@ action:
     channel: "stackstorm-demo"
     message: |
       Receive new ticket from jira
-      {{trigger}}
       Trigger id: {{trigger.id}}
       Trigger url: {{trigger.issue_url}}
-      Trigger expand: {{trigger.expand}}
+      Browse url: {{trigger.issue_browse_url}}
+      Issue Type: {{trigger.fields.issuetype.name}}
+      Issue Type description: {{trigger.fields.issuetype.description}}
+      Issue Summary: {{trigger.fields.summary}}
