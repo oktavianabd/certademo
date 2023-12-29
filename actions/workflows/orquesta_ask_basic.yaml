@@ -28,10 +28,12 @@ tasks:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
         do: finish
         publish:
-          - task_execution_id: <% task(get_approval).task_execution_id %>
-          - workflow_execution_id: <% task(get_approval).workflow_execution_id %>
-          - task_name: <% task(get_approval).task_name %>
-          - task_id: <% task(get_approval).task_id %>
+          - web_url: <% task(get_approval).web_url %>
+          - id: <% task(get_approval).id %>
+          # - task_execution_id: <% task(get_approval).task_execution_id %>
+          # - workflow_execution_id: <% task(get_approval).workflow_execution_id %>
+          # - task_name: <% task(get_approval).task_name %>
+          # - task_id: <% task(get_approval).task_id %>
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
 
@@ -42,11 +44,9 @@ tasks:
         Approved, Automation completed
 
         get_approval task
-        <% ctx().task_execution_id %>
-        <% ctx().workflow_execution_id %>
-        <% ctx().task_name %>
-        <% ctx().task_id %>
-
+        <% ctx().web_url %>
+        <% ctx().id %>        
+      
         start task
         <% task("start").task_execution_id %>
         <% task("start").workflow_execution_id %>
@@ -57,6 +57,11 @@ tasks:
         <% task("start").status %>
         <% task("start").start_timestamp %>
         <% task("start").end_timestamp %>
+      # <% ctx().task_execution_id %>
+      # <% ctx().workflow_execution_id %>
+      # <% ctx().task_name %>
+      # <% ctx().task_id %>
+
        # <% st2kv('task("get_approval").task_execution_id', decrypt=>true) %> 
        # <% task("get_approval").action_execution_id %>
 
