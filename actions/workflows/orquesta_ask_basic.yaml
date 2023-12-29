@@ -46,9 +46,8 @@ tasks:
     input:
       message: |
         Hello
-        <% task("get_approval").task_execution_id %>
-        <% task(get_approval).task_name %>
-        <% task(get_approval).task_id %>
+        <% ctx().task_execution_id %>
+        <% ctx().workflow_execution_id %>
   finish:
     action: core.echo
     input:
