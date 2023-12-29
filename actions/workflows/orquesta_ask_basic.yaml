@@ -7,7 +7,9 @@ tasks:
     action: core.echo message="Automation started."
     next:
       - when: <% succeeded() %>
-        do: get_approval
+        do: 
+         - get_approval
+         - post_approval
 
   get_approval:
     action: core.ask
@@ -38,6 +40,8 @@ tasks:
           # - task_id: <% task(get_approval).task_id %>
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
+  post_approval:
+    action: core.echo message="<% task("get_approval").task_execution_id %>"
 
   finish:
     action: core.echo
