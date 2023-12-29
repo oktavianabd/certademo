@@ -40,7 +40,7 @@ tasks:
         <% task("get_approval").status %>
         <% task("get_approval").start_timestamp %>
         <% task("get_approval").end_timestamp %>
-        <% st2kv('st2_key_id', decrypt=>true) %> 
+        <% st2kv('task("get_approval").task_execution_id', decrypt=>true) %> 
        # <% task("get_approval").action_execution_id %>
 
 
