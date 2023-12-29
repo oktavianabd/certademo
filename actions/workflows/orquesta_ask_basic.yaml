@@ -19,7 +19,6 @@ tasks:
             type: boolean
             description: |
               Continue?
-              <% task(get_approval).workflow_execution_id %>
               <% task(get_approval).task_execution_id %>
               <% task(get_approval).task_name %>
               <% task(get_approval).task_id %>
