@@ -5,13 +5,14 @@ description: "handle if there is new ticket created from jira API v2"
 enabled: true
 
 trigger:
-  type: jira.issues_tracker_for_apiv2
+  type: "jira.issues_tracker"
 
 criteria: {}
 
 action:
-  ref: "core.local"
+  ref: "chatops.post_message"
   parameters:
+    channel: "stackstorm-demo"
     message: |
       Receive new ticket from jira
       {{trigger}}
