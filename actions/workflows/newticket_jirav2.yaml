@@ -2,6 +2,11 @@ version: 1.0
 name: "newticket_jirav2"
 description: "handle new ticket from jira"
 
+input:
+  - issue_key
+  - summary
+  - description
+
 tasks:
   notify:
     action: chatops.post_message
@@ -9,7 +14,7 @@ tasks:
       channel: stackstorm-demo
       message: |
         There is new ticket from jira
-        Ticket description: {{trigger.fields.status.description}}
-    # next:
-    #   - when: <% succeeded %>
-    #     do: get_approval
+        Ticket key: <% ctx().issue_key %>
+        Summary: <% ctx().summary %>
+        Ticket description: <% ctx().description %>
+
