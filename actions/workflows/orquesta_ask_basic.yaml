@@ -71,3 +71,6 @@ tasks:
 
   stop:
     action: core.echo message="Un-approved, Automation stopped."
+output:
+ - task_execution_id: '<% ctx("task_execution_id") %>'
+ - workflow_execution_id : '<% ctx("workflow_execution_id") %>'
