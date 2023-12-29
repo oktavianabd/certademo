@@ -38,6 +38,7 @@ tasks:
           - workflow_execution_id: '<% task().workflow_execution_id %>'
           - task_name: '<% task().task_name %>'
           - execution_id: '<% ctx(st2).child_exec_id %>'
+          - api_url: '<% ctx(st2).api_url %>'
           # - task_name: <% task(get_approval).task_name %>
           # - task_id: <% task(get_approval).task_id %>
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
@@ -58,6 +59,7 @@ tasks:
 
         get_approval task
         <% ctx().execution_id %>
+        <% ctx().api_url %>
         <% ctx().task_execution_id %>
         <% ctx().workflow_execution_id %>        
         <% ctx().task_name %>
