@@ -37,6 +37,7 @@ tasks:
           - task_execution_id: '<% task().task_execution_id %>'
           - workflow_execution_id: '<% task().workflow_execution_id %>'
           - task_name: '<% task().task_name %>'
+          - execution_id: '<% ctx(st2).action_execution_id %>'
           # - task_name: <% task(get_approval).task_name %>
           # - task_id: <% task(get_approval).task_id %>
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
@@ -56,6 +57,7 @@ tasks:
         Approved, Automation completed
 
         get_approval task
+        <% ctx().execution_id %>
         <% ctx().task_execution_id %>
         <% ctx().workflow_execution_id %>        
         <% ctx().task_name %>
