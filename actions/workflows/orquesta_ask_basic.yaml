@@ -18,11 +18,11 @@ tasks:
           approved:
             type: boolean
             description: |
-              "Continue?"
-              <% task("get_approval").workflow_execution_id %>
-              <% task("get_approval").task_execution_id %>
-              <% task("get_approval").task_name %>
-              <% task("get_approval").task_id %>
+              Continue?
+              <% task(get_approval).workflow_execution_id %>
+              <% task(get_approval).task_execution_id %>
+              <% task(get_approval).task_name %>
+              <% task(get_approval).task_id %>
             required: True
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
