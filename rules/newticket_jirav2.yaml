@@ -14,7 +14,7 @@ action:
   parameters:
     channel: "stackstorm-demo"
     message: |
-      Receive new ticket from jira
+      Hello, receive new ticket from Jira
       Trigger ticket key: {{trigger.issue_key}}
       Status : {{trigger.fields.status.name}}
       Trigger url: {{trigger.issue_url}}
