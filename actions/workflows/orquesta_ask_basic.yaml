@@ -19,13 +19,19 @@ tasks:
             type: boolean
             description: |
               Continue?
-              <% task(get_approval).task_execution_id %>
-              <% task(get_approval).task_name %>
-              <% task(get_approval).task_id %>
+            # <% task(get_approval).task_execution_id %>
+            # <% task(get_approval).workflow_execution_id %>
+            # <% task(get_approval).task_name %>
+            # <% task(get_approval).task_id %>
             required: True
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
         do: finish
+        publish:
+          - task_execution_id: <% task(get_approval).task_execution_id %>
+          - workflow_execution_id: <% task(get_approval).workflow_execution_id %>
+          - task_name: <% task(get_approval).task_name %>
+          - task_id: <% task(get_approval).task_id %>
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
 
@@ -34,6 +40,14 @@ tasks:
     input:
       message: |
         Approved, Automation completed
+
+        get_approval task
+        <% ctx().task_execution_id %>
+        <% ctx().workflow_execution_id %>
+        <% ctx().task_name %>
+        <% ctx().task_id %>
+
+        start task
         <% task("start").task_execution_id %>
         <% task("start").workflow_execution_id %>
         <% task("start").task_name %>
