@@ -9,7 +9,7 @@ tasks:
       - when: <% succeeded() %>
         do: 
          - get_approval
-         - post_approval
+        #  - post_approval
   
   get_approval:
     action: core.ask
@@ -34,20 +34,21 @@ tasks:
         publish:
           # - web_url: <% task().web_url %>
           # - id: <% task().id %>
-          - task_execution_id: '<% task("get_approval").task_execution_id %>'
-          - workflow_execution_id: '<% task("get_approval").workflow_execution_id %>'
+          - task_execution_id: '<% task().task_execution_id %>'
+          - workflow_execution_id: '<% task().workflow_execution_id %>'
+          - task_name: '<% task().task_name %>'
           # - task_name: <% task(get_approval).task_name %>
           # - task_id: <% task(get_approval).task_id %>
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
   
-  post_approval:
-    action: core.echo 
-    input:
-      message: |
-        Hello
-        <% ctx().task_execution_id %>
-        <% ctx().workflow_execution_id %>
+  # post_approval:
+  #   action: core.echo 
+  #   input:
+  #     message: |
+  #       Hello
+  #       <% ctx().task_execution_id %>
+  #       <% ctx().workflow_execution_id %>
   finish:
     action: core.echo
     input:
@@ -57,6 +58,7 @@ tasks:
         get_approval task
         <% ctx().task_execution_id %>
         <% ctx().workflow_execution_id %>        
+        <% ctx().task_name %>
 
         start task
         <% task("start").task_execution_id %>
