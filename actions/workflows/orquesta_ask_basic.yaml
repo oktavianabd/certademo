@@ -34,7 +34,7 @@ tasks:
         publish:
           # - web_url: <% task().web_url %>
           # - id: <% task().id %>
-          - exe_id: <% ctx(get_approval).action_execution_id %>
+          - exe_id: <% task(get_approval).action_execution_id %>
           - task_execution_id: '<% task().task_execution_id %>'
           - workflow_execution_id: '<% task().workflow_execution_id %>'
           - task_name: '<% task().task_name %>'
