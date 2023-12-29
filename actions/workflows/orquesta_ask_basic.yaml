@@ -37,7 +37,7 @@ tasks:
           - task_execution_id: '<% task().task_execution_id %>'
           - workflow_execution_id: '<% task().workflow_execution_id %>'
           - task_name: '<% task().task_name %>'
-          - execution_id: '<% ctx(st2).child_exec_id %>'
+          - execution_id: '<% ctx(st2).action_execution_id %>'
           - api_url: '<% ctx(st2).api_url %>'
           # - task_name: <% task(get_approval).task_name %>
           # - task_id: <% task(get_approval).task_id %>
