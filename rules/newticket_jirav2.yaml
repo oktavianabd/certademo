@@ -5,7 +5,7 @@ description: "handle if there is new ticket created from jira API v2"
 enabled: true
 
 trigger:
-  type: jira.JIRASensorForAPIv2
+  type: jira.issues_tracker_for_apiv2
 
 criteria: {}
 
