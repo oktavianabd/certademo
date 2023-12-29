@@ -38,7 +38,7 @@ tasks:
         <% task("get_approval").status %>
         <% task("get_approval").start_timestamp %>
         <% task("get_approval").end_timestamp %>
-        <% task("get_approval").action_execution_id %>
+       # <% task("get_approval").action_execution_id %>
 
 
 
