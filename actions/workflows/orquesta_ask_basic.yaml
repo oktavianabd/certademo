@@ -19,8 +19,8 @@ tasks:
             type: boolean
             description: |
               Continue?
-              <% task(get_approval).web_url %>
-              <% task(get_approval).id %>
+              <% task().web_url %>
+              <% task().id %>
             # <% task(get_approval).task_execution_id %>
             # <% task(get_approval).workflow_execution_id %>
             # <% task(get_approval).task_name %>
