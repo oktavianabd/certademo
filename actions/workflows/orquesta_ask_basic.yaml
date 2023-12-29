@@ -57,7 +57,7 @@ tasks:
         Approved, Automation completed
 
         get_approval task
-        <% ctx().exe_id %>
+        <% ctx().result.exe_id %>
         <% ctx().task_execution_id %>
         <% ctx().workflow_execution_id %>        
         <% ctx().task_name %>
