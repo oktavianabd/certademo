@@ -17,9 +17,13 @@ tasks:
         properties:
           approved:
             type: boolean
-            description: "Continue?"
+            description: |
+              "Continue?"
+              <% task("start").workflow_execution_id %>
+              <% task("start").task_execution_id %>
+              <% task("start").task_name %>
+              <% task("start").task_id %>
             required: True
-
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
         do: finish
