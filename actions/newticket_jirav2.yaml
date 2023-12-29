@@ -1,0 +1,6 @@
+---
+name: "newticket_jirav2"
+description: "handle if there is new ticket created from jira API v2"
+runner_type: orquesta
+entry_point: workflows/newticket_jirav2.yaml
+enabled: true

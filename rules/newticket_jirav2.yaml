@@ -10,16 +10,17 @@ trigger:
 criteria: {}
 
 action:
-  ref: "chatops.post_message"
-  parameters:
-    channel: "stackstorm-demo"
-    message: |
-      Hello, receive new ticket from Jira
-      Trigger ticket key: {{trigger.issue_key}}
-      Status : {{trigger.fields.status.name}}
-      Trigger url: {{trigger.issue_url}}
-      Browse url: {{trigger.issue_browse_url}}
-      Ticket Type: {{trigger.fields.issuetype.name}}
-      Ticket Type description: {{trigger.fields.issuetype.description}}
-      Ticket Summary: {{trigger.fields.summary}}
-      Ticket description: {{trigger.fields.status.description}}
+  ref: "certademo.newticket_jirav2"
+  # ref: "chatops.post_message"
+  # parameters:
+  #   channel: "stackstorm-demo"
+  #   message: |
+  #     Hello, receive new ticket from Jira
+  #     Trigger ticket key: {{trigger.issue_key}}
+  #     Status : {{trigger.fields.status.name}}
+  #     Trigger url: {{trigger.issue_url}}
+  #     Browse url: {{trigger.issue_browse_url}}
+  #     Ticket Type: {{trigger.fields.issuetype.name}}
+  #     Ticket Type description: {{trigger.fields.issuetype.description}}
+  #     Ticket Summary: {{trigger.fields.summary}}
+  #     Ticket description: {{trigger.fields.status.description}}
