@@ -1,6 +1,6 @@
 version: 1.0
 name: "newticket_jirav2"
-description: "handle new ticket from jira"
+description: "handle new ticket from jira v2"
 
 input:
   - issue_key
