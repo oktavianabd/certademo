@@ -93,9 +93,7 @@ tasks:
     action: core.pause max_pause=240
     next:
       - when: <% succeeded() %>
-        do: 
-          - post_wait_for_vm_booting
-          - ssh_check
+        do: ssh_check
         publish:
           - stdout_wait_prov_vm_01: <% result().result %>
   
@@ -115,6 +113,9 @@ tasks:
       channel: stackstorm-demo
       message: |
         Status: <% ctx().stdout_ssh_check %>
+    next:
+      - when: <% succeeded %>
+        do: post_wait_for_vm_booting
 
   post_wait_for_vm_booting:
     action: chatops.post_message 
