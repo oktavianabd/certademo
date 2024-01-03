@@ -7,6 +7,7 @@ input:
   - summary
   - description
   - username
+
 tasks:
   notify:
     action: chatops.post_message
@@ -20,9 +21,28 @@ tasks:
         Desired username: <% ctx().username %>
     next:
       - when: <% succeeded %>
-        do: 
+        do: get_approval
+
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: "Do you want add new username <% ctx().username %> ?"
+            required: true
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do:
          - usercreate
          - postjiracomment
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+
   usercreate:
     action: core.remote_sudo
     input:
