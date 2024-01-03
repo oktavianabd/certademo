@@ -26,7 +26,7 @@ tasks:
     action: core.remote_sudo
     input:
       cmd: useradd tom && echo "tom:p@ssword" | chpasswd
-      hostname: 10.63.20.2
+      hosts: 10.63.20.2
   postjiracomment:
     action: jira.comment_issue
     input:
