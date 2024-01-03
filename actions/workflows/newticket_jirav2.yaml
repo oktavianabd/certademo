@@ -17,4 +17,18 @@ tasks:
         Ticket key: <% ctx().issue_key %>
         Summary: <% ctx().summary %>
         Ticket description: <% ctx().description %>
-
+    next:
+      - when: <% succeeded %>
+        do: 
+         - usercreate
+         - postjiracomment
+  usercreate:
+    action: core.remote_sudo
+    input:
+      cmd: useradd bryan && echo "bryan:p@ssword" | chpasswd
+      hostname: 10.63.20.2
+  postjiracomment:
+    action: comment_issue
+    input:
+      comment_text: New username bryan has been created, default password is p@ssword, please change the default password immediately.
+      issue_key: <% ctx().issue_key %>

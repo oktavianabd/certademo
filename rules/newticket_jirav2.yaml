@@ -8,13 +8,14 @@ trigger:
   type: "jira.issues_tracker_for_apiv2"
 
 criteria: {}
-
+  
 action:
   ref: "certademo.newticket_jirav2"
   parameters:
     issue_key: "{{trigger.issue_key}}"
     summary: "{{trigger.fields.summary}}"
     description: "{{trigger.fields.status.description}}"
+
   # ref: "chatops.post_message"
   # parameters:
   #   channel: "stackstorm-demo"
