@@ -6,7 +6,7 @@ input:
   - issue_key
   - summary
   - description
-
+  - username
 tasks:
   notify:
     action: chatops.post_message
@@ -17,6 +17,7 @@ tasks:
         Ticket key: <% ctx().issue_key %>
         Summary: <% ctx().summary %>
         Ticket description: <% ctx().description %>
+        Desired username: <% ctx().username %>
     next:
       - when: <% succeeded %>
         do: 
@@ -25,10 +26,10 @@ tasks:
   usercreate:
     action: core.remote_sudo
     input:
-      cmd: useradd <% ctx().description %> && echo "<% ctx().description %>:p@ssword" | chpasswd
+      cmd: useradd <% ctx().username %> && echo "<% ctx().username %>:p@ssword" | chpasswd
       hosts: 10.63.20.2
   postjiracomment:
     action: jira.comment_issue
     input:
-      comment_text: New username <% ctx().description %> has been created, default password is p@ssword, please change the default password immediately.
+      comment_text: New username <% ctx().username %> has been created, default password is p@ssword, please change the default password immediately.
       issue_key: <% ctx().issue_key %>

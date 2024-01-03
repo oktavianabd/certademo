@@ -12,3 +12,5 @@ parameters:
     type: string
   description:
     type: string
+  username:
+    type: string

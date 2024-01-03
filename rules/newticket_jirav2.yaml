@@ -18,6 +18,7 @@ action:
     issue_key: "{{trigger.issue_key}}"
     summary: "{{trigger.fields.summary}}"
     description: "{{trigger.fields.description}}"
+    username: "{{trigger.fields.customfield_10064}}"
 
   # ref: "chatops.post_message"
   # parameters:
