@@ -25,10 +25,10 @@ tasks:
   usercreate:
     action: core.remote_sudo
     input:
-      cmd: useradd bryan && echo "bryan:p@ssword" | chpasswd
+      cmd: useradd tom && echo "tom:p@ssword" | chpasswd
       hostname: 10.63.20.2
   postjiracomment:
-    action: comment_issue
+    action: jira.comment_issue
     input:
-      comment_text: New username bryan has been created, default password is p@ssword, please change the default password immediately.
+      comment_text: New username tom has been created, default password is p@ssword, please change the default password immediately.
       issue_key: <% ctx().issue_key %>
