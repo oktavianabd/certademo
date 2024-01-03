@@ -8,13 +8,13 @@ trigger:
   type: "jira.issues_tracker_for_apiv2"
 
 criteria: {}
-  
+
 action:
   ref: "certademo.newticket_jirav2"
   parameters:
     issue_key: "{{trigger.issue_key}}"
     summary: "{{trigger.fields.summary}}"
-    description: "{{trigger.fields.status.description}}"
+    description: "{{trigger.fields.description}}"
 
   # ref: "chatops.post_message"
   # parameters:
@@ -28,4 +28,4 @@ action:
   #     Ticket Type: {{trigger.fields.issuetype.name}}
   #     Ticket Type description: {{trigger.fields.issuetype.description}}
   #     Ticket Summary: {{trigger.fields.summary}}
-  #     Ticket description: {{trigger.fields.status.description}}
+  #     Ticket description: {{trigger.fields.description}}
