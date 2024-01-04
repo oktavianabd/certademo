@@ -102,18 +102,33 @@ tasks:
     action: linux.wait_for_ssh
     input: 
       hostname: 10.63.20.4
+      keyfile: /home/stanley/.ssh/stanley_rsa_ss_20_12
     next:
       - when: <% succeeded %>
         do: post_ssh_check
         publish:
           - stdout_ssh_check: <% result().stderr %>
+      - when: <% failed() %>
+        do: ssh_failure
+        publish:
+          - stderr_ssh_check_fail: <% result().stderr %>
   
+  ssh_failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Status:
+        <% ctx().stderr_ssh_check_fail %>
+  
+
   post_ssh_check:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
-        Status: <% ctx().stdout_ssh_check %>
+        Status:
+        <% ctx().stdout_ssh_check %>
     next:
       - when: <% succeeded %>
         do: post_wait_for_vm_booting
@@ -123,7 +138,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Status: VMs is up and reachable.
+        Status: Worker-4 is up and reachable.
     next:
       - when: <% succeeded() %>
         do: rebuild_nc_01
