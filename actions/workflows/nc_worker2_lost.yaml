@@ -127,7 +127,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Status:
+        Status: SSH attempt
         <% ctx().stdout_ssh_check %>
     next:
       - when: <% succeeded %>

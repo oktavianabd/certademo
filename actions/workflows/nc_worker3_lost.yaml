@@ -126,7 +126,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Status:
+        Status: SSH attempt
         <% ctx().stdout_ssh_check %>
     next:
       - when: <% succeeded %>
@@ -137,7 +137,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Status: VMs is up. Provision vm 1/8 completed.
+        Status: Worker-5 is up and reachable.
     next:
       - when: <% succeeded() %>
         do: provision_vm_02
