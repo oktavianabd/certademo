@@ -9,13 +9,24 @@ trigger:
   parameters:
     url: "certademo"
 
+# criteria:
+#   trigger.body.alerts[0].labels.alertname:
+#     pattern: "NodeLost_w2"
+#     type: "equals"
+#   trigger.body.alerts[0].status:
+#     pattern: "firing"
+#     type: "equals"
+
 criteria:
   trigger.body.alerts[0].labels.alertname:
-    pattern: "NodeLost_w2"
+    pattern: "WorkerDownDemo"
     type: "equals"
   trigger.body.alerts[0].status:
     pattern: "firing"
     type: "equals"
+  trigger.body.alerts[0].labels.instance:
+    pattern: "10.63.20.230"
+    type: "contains"
 
 action:
   ref: "certademo.nc_worker2_lost"
