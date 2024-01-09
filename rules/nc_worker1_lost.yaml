@@ -19,7 +19,7 @@ trigger:
 
 criteria:
   trigger.body.alerts[0].labels.alertname:
-    pattern: "Worker01DownDemo"
+    pattern: "Worker01Down"
     type: "equals"
   trigger.body.alerts[0].status:
     pattern: "firing"
