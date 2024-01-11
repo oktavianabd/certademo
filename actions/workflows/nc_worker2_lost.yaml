@@ -46,7 +46,7 @@ tasks:
     action: ansible.playbook
     input:
       # playbook: /etc/ansible/turn-on-vm.yml
-      playbook: /etc/ansible/turn-on-vm-esxi.yaml
+      playbook: /etc/ansible/turn-on-vm-esxi.yml
     next:
       - when: <% failed() %>
         do: failure
