@@ -102,6 +102,7 @@ tasks:
     action: linux.wait_for_ssh
     input: 
       hostname: 10.63.20.4
+      # hostname: 10.63.22.78
       keyfile: /home/stanley/.ssh/stanley_rsa_ss_20_12
     next:
       - when: <% succeeded %>
