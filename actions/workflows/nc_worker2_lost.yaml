@@ -11,27 +11,6 @@ input:
 #   - stdout_worker_3: <% ctx(stdout_worker_3) %>
 
 tasks:
-  # check_worker3:
-  #   action: core.remote_sudo
-  #   input: 
-  #     cmd: "systemctl status php-fpm.service | head -n 3 | tail -n 1"
-  #     hosts: <% ctx().worker_3 %>
-  #   next:
-  #     - when: <% succeeded %>
-  #       do: notify_check_worker_3
-  #       publish:
-  #         - stdout_worker_3: <% result().get(ctx().worker_3).stdout %>
-
-  # notify_check_worker_3:
-  #   action: chatops.post_message
-  #   input:
-  #     channel: stackstorm-demo
-  #     message: |
-  #       Pre-check, worker-3 status
-  #       <% ctx().stdout_worker_3 %>
-  #   next:
-  #     - when: <% succeeded %>
-  #       do: notify
 
   notify:
     action: chatops.post_message
@@ -90,19 +69,11 @@ tasks:
       - when: <% succeeded() %>
         do: ssh_check
 
-  # wait_for_worker4_booting:
-  #   action: core.pause max_pause=180
-  #   next:
-  #     - when: <% succeeded() %>
-  #       do: rebuild_nc_01
-  #       publish:
-  #         - stdout_wait_prov_vm_01: <% result().result %>
-
   ssh_check:
     action: linux.wait_for_ssh
     input: 
-      hostname: 10.63.20.4
-      # hostname: 10.63.22.78
+      # hostname: 10.63.20.4
+      hostname: 10.63.22.78
       keyfile: /home/stanley/.ssh/stanley_rsa_ss_20_12
     next:
       - when: <% succeeded %>
