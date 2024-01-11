@@ -45,7 +45,8 @@ tasks:
   turn_on_worker4:
     action: ansible.playbook
     input:
-      playbook: /etc/ansible/turn-on-vm.yml
+      # playbook: /etc/ansible/turn-on-vm.yml
+      playbook: /etc/ansible/turn-on-vm-esxi.yaml
     next:
       - when: <% failed() %>
         do: failure
