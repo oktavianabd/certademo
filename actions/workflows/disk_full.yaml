@@ -54,7 +54,7 @@ tasks:
   remove_logs:
     action: core.remote_sudo
     input:
-      cmd: find % ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
+      cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
       hosts: <% ctx().instance %>
     next:
       - when: <% failed() %>
