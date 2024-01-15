@@ -25,7 +25,7 @@ tasks:
     input:
       channel: stackstorm-demo
       message: |
-        Alert: Disk <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (10% left)
+        Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
         List of log files, do you want to remove it?
         <% ctx().stdout %>
     next:
