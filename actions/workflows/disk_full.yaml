@@ -44,20 +44,20 @@ tasks:
             required: True
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
-        do: remove_logs
+        do: pause_for_5secs
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
   
   stop:
     action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
 
-  # pause_for_3secs:
-  #   action: core.pause
-  #   input:
-  #     max_pause: 3
-  #   next:
-  #     - when: <% succeeded %>
-  #       do: remove_logs
+  pause_for_5secs:
+    action: core.pause
+    input:
+      max_pause: 5
+    next:
+      - when: <% succeeded %>
+        do: remove_logs
 
   remove_logs:
     action: core.remote_sudo
