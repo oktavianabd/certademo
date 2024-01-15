@@ -7,7 +7,9 @@ entry_point: "workflows/disk_full.yaml"
 enabled: true
 
 parameters:
-  hostip:
+  instance:
     type: "string"
     description: "a hostip"
-    required: true
+  mountpoint:
+    type: "string"
+    description: "mount point"

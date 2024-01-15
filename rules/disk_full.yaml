@@ -20,7 +20,8 @@ criteria:
 action:
   ref: "certademo.disk_full"
   parameters:
-    hostip: "{{trigger.body.alerts[0].labels.instance}}"
+    instance: "{{trigger.body.alerts[0].labels.instance}}"
+    mountpoint: "{{trigger.body.alerts[0].labels.mountpoint}}"
     # message: |
     #   status: {{trigger.body.alerts[0].status}}
     #   severity: {{trigger.body.alerts[0].labels.severity}}

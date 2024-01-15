@@ -4,8 +4,8 @@ name: disk_full
 description: handle when host out of disk space
 
 input:
-  - hostip
-
+  - instance
+  - mountpoint
 output:
   - stdout: <% ctx(stdout) %>
 
@@ -13,19 +13,19 @@ tasks:
   checkdisk:
     action: core.remote_sudo
     input:
-      cmd: find /var/log/httpd -name "*" -type f -mtime +12 -exec ls -lahtr {} + | sort -n -r
-      hosts: <% ctx().hostip %>
+      cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec ls -lahtr {} + | sort -n -r
+      hosts: <% ctx().instance %>
     next:
       - when: <% succeeded %>
         do: notify
         publish:
-          - stdout: <% result().get(ctx().hostip).stdout %>
+          - stdout: <% result().get(ctx().instance).stdout %>
   notify:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
-        Alert: Disk on <% ctx().hostip %> is out of disk space
+        Alert: Disk <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (10% left)
         List of log files, do you want to remove it?
         <% ctx().stdout %>
     next:
@@ -54,17 +54,17 @@ tasks:
   remove_logs:
     action: core.remote_sudo
     input:
-      cmd: find /var/log/httpd -name "*" -type f -mtime +12 -exec rm -vf {} \;
-      hosts: <% ctx().hostip %>
+      cmd: find % ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
+      hosts: <% ctx().instance %>
     next:
       - when: <% failed() %>
         do: failure
         publish:
-          - rm_failed: <% result().get(ctx().hostip).stderr %>
+          - rm_failed: <% result().get(ctx().instance).stderr %>
       - when: <% succeeded() %>
         do: success
         publish:
-          - rm_success: <% result().get(ctx().hostip).stdout %>
+          - rm_success: <% result().get(ctx().instance).stdout %>
 
   failure:
     action: chatops.post_message
