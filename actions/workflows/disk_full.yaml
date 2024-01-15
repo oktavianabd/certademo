@@ -13,7 +13,7 @@ tasks:
   checkdisk:
     action: core.remote_sudo
     input:
-      cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec ls -lahtr {} + | sort -n -r
+      cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec ls -lahtr {} +
       hosts: <% ctx().instance %>
     next:
       - when: <% succeeded %>
