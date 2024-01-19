@@ -76,7 +76,7 @@ tasks:
       - when: <% succeeded() %>
         do: post_provision_vm_01
         publish:
-          - stdout_prov_vm_01: <% result().result.vm_info.value.hostname %>
+          - stdout_prov_vm_01: <% result().result.vm_info.value %>
 
   post_provision_vm_01:
     action: chatops.post_message 
