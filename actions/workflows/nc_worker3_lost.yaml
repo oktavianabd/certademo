@@ -67,7 +67,7 @@ tasks:
   provision_vm_01:
     action: terraform.apply
     input:
-      plan_path: /root/terraform/tf-certademo-worker-5
+      plan_path: /root/terraform/tf-certademo-worker-5-esxi-rocky93
     next:
       - when: <% failed() %>
         do: failure
@@ -101,7 +101,8 @@ tasks:
   ssh_check:
     action: linux.wait_for_ssh
     input: 
-      hostname: 10.63.20.5
+      # hostname: 10.63.20.5
+      hostname: 10.63.22.79
       keyfile: /home/stanley/.ssh/stanley_rsa_ss_20_12
     next:
       - when: <% succeeded %>
