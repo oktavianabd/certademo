@@ -91,13 +91,13 @@ tasks:
   #       publish:
   #         - disk_stdout: <% result().stdout %>
   
-  failure:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Result: Extend disk failed
-        <% ctx().disk_stderr %>
+  # failure:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Result: Extend disk failed
+  #       <% ctx().disk_stderr %>
 
   # checkdisksize_after:
   #   action: core.remote_sudo
@@ -118,13 +118,13 @@ tasks:
   #       <% ctx().disk_stdout %>
   #       Result: Extend <% ctx().mountpoint %> successful
   #       <% ctx().stdout_df_after %>
-  # failure:
-  #   action: chatops.post_message
-  #   input:
-  #     channel: stackstorm-demo
-  #     message: |
-  #       Result: Remove logs failed
-  #       <% ctx().rm_failed %>
+  failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Result: Remove logs failed
+        <% ctx().rm_failed %>
   success:
     action: chatops.post_message
     input:
