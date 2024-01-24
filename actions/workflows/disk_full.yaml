@@ -51,32 +51,61 @@ tasks:
   stop:
     action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
 
-  remove_logs:
-    action: core.remote_sudo
+  # remove_logs:
+  #   action: core.remote_sudo
+  #   input:
+  #     cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
+  #     hosts: <% ctx().instance %>
+  #   next:
+  #     - when: <% failed() %>
+  #       do: failure
+  #       publish:
+  #         - rm_failed: <% result().get(ctx().instance).stderr %>
+  #     - when: <% succeeded() %>
+  #       do: success
+  #       publish:
+  #         - rm_success: <% result().get(ctx().instance).stdout %>
+
+  extend_disk:
+    action: ansible.playbook
     input:
-      cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
-      hosts: <% ctx().instance %>
+      playbook: /etc/ansible/extend-lvm.yml
+      extra_vars: [variable_host=nmc05]
     next:
       - when: <% failed() %>
         do: failure
         publish:
-          - rm_failed: <% result().get(ctx().instance).stderr %>
+          - disk_stderr: <% result().get(ctx().instance).stderr %>
       - when: <% succeeded() %>
         do: success
         publish:
-          - rm_success: <% result().get(ctx().instance).stdout %>
-
+          - disk_stdout: <% result().get(ctx().instance).stdout %>
+  
   failure:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
         Result: Remove logs failed
-        <% ctx().rm_failed %>
+        <% ctx().disk_stderr %>
   success:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
         Result: Remove logs successful
-        <% ctx().rm_success %>
+        <% ctx().disk_stdout %>
+  # failure:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Result: Remove logs failed
+  #       <% ctx().rm_failed %>
+  # success:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Result: Remove logs successful
+  #       <% ctx().rm_success %>
