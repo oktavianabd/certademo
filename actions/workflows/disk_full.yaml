@@ -10,24 +10,36 @@ output:
   - stdout: <% ctx(stdout) %>
 
 tasks:
-  checkdisk:
+  # checkdisk:
+  #   action: core.remote_sudo
+  #   input:
+  #     cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec ls -lahtr {} +
+  #     hosts: <% ctx().instance %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: notify
+  #       publish:
+  #         - stdout: <% result().get(ctx().instance).stdout %>
+  checkdisksize:
     action: core.remote_sudo
     input:
-      cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec ls -lahtr {} +
+      cmd: df -h <% ctx().mountpoint %>
       hosts: <% ctx().instance %>
     next:
       - when: <% succeeded %>
         do: notify
         publish:
-          - stdout: <% result().get(ctx().instance).stdout %>
+          - stdout_df: <% result().get(ctx().instance).stdout %>
   notify:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
         Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
-        List of log files, do you want to remove it?
-        <% ctx().stdout %>
+        Do you want to extend the disk space?
+        <% ctx().stdout_df %>
+      # List of log files, do you want to remove it?
+      # <% ctx().stdout %>
     next:
       - when: <% succeeded %>
         do: get_approval 
@@ -44,7 +56,7 @@ tasks:
             required: True
     next:
       - when: <% succeeded and task(get_approval).result.response.approved = true %>
-        do: remove_logs
+        do: extend_disk
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
   
@@ -77,7 +89,7 @@ tasks:
         publish:
           - disk_stderr: <% result().get(ctx().instance).stderr %>
       - when: <% succeeded() %>
-        do: success
+        do: checkdisksize_after
         publish:
           - disk_stdout: <% result().get(ctx().instance).stdout %>
   
@@ -88,13 +100,28 @@ tasks:
       message: |
         Result: Remove logs failed
         <% ctx().disk_stderr %>
+
+  checkdisksize_after:
+    action: core.remote_sudo
+    input:
+      cmd: df -h <% ctx().mountpoint %>
+      hosts: <% ctx().instance %>
+    next:
+      - when: <% succeeded %>
+        do: success
+        publish:
+          - stdout_df_after: <% result().get(ctx().instance).stdout %>
+
   success:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
-        Result: Remove logs successful
         <% ctx().disk_stdout %>
+        <% ctx().stdout_df_after %>
+        Result: Extend <% ctx().mountpoint %> successful
+        
+
   # failure:
   #   action: chatops.post_message
   #   input:
