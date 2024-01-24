@@ -118,10 +118,8 @@ tasks:
       channel: stackstorm-demo
       message: |
         <% ctx().disk_stdout %>
-        <% ctx().stdout_df_after %>
         Result: Extend <% ctx().mountpoint %> successful
-        
-
+        <% ctx().stdout_df_after %>
   # failure:
   #   action: chatops.post_message
   #   input:
