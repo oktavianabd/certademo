@@ -87,18 +87,18 @@ tasks:
       - when: <% failed() %>
         do: failure
         publish:
-          - disk_stderr: <% result().get(ctx().instance).stderr %>
+          - disk_stderr: <% result().stderr %>
       - when: <% succeeded() %>
         do: checkdisksize_after
         publish:
-          - disk_stdout: <% result().get(ctx().instance).stdout %>
+          - disk_stdout: <% result().stdout %>
   
   failure:
     action: chatops.post_message
     input:
       channel: stackstorm-demo
       message: |
-        Result: Remove logs failed
+        Result: Extend disk failed
         <% ctx().disk_stderr %>
 
   checkdisksize_after:
