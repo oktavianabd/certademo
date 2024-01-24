@@ -6,8 +6,8 @@ description: handle when host out of disk space
 input:
   - instance
   - mountpoint
-output:
-  - stdout: <% ctx(stdout) %>
+# output:
+#   - stdout: <% ctx(stdout) %>
 
 tasks:
   # checkdisk:
