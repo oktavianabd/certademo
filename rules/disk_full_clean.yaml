@@ -1,8 +1,8 @@
 ---
-name: "disk_full"
+name: "disk_full_clean"
 pack: "certademo"
 description: "disk full"
-enabled: false
+enabled: true
 
 trigger:
   type: "core.st2.webhook"
@@ -18,7 +18,7 @@ criteria:
     type: "equals"
 
 action:
-  ref: "certademo.disk_full"
+  ref: "certademo.disk_full_clean"
   parameters:
     instance: "{{trigger.body.alerts[0].labels.instance}}"
     mountpoint: "{{trigger.body.alerts[0].labels.mountpoint}}"
