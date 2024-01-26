@@ -22,6 +22,7 @@ action:
   parameters:
     instance: "{{trigger.body.alerts[0].labels.instance}}"
     mountpoint: "{{trigger.body.alerts[0].labels.mountpoint}}"
+    nodename: "{{trigger.body.alerts[0].labels.nodename}}"
     # message: |
     #   status: {{trigger.body.alerts[0].status}}
     #   severity: {{trigger.body.alerts[0].labels.severity}}

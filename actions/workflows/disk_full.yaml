@@ -6,6 +6,7 @@ description: handle when host out of disk space
 input:
   - instance
   - mountpoint
+  - nodename
 # output:
 #   - stdout: <% ctx(stdout) %>
 
@@ -92,7 +93,7 @@ tasks:
     action: ansible.playbook
     input:
       playbook: /etc/ansible/extend-lvm.yml
-      extra_vars: [variable_host=<% ctx().instance %> size_gb=<% ctx().disk_size %>]
+      extra_vars: [variable_host=<% ctx().nodename %> size_gb=<% ctx().disk_size %>]
     next:
       - when: <% failed() %>
         do: failure

@@ -13,3 +13,6 @@ parameters:
   mountpoint:
     type: "string"
     description: "mount point"
+  nodename:
+    type: "string"
+    description: "nodename"
