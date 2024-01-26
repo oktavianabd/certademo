@@ -52,10 +52,20 @@ tasks:
         properties:
           approved:
             type: boolean
-            description: Do you want to continue to remove the log files?
+            description: Do you want to continue to resize the disk?
             required: True
+          disk_size_gb:
+            type: number
+            description: Desired size of disk in GigaByte
+    # next:
+    #   - when: <% succeeded and task(get_approval).result.response.approved = true %>
+    #     do: extend_disk
+    #   - when: <% succeeded and task(get_approval).result.response.approved = false %>
+    #     do: stop
     next:
-      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+      - when: <% task(get_approval).result.response.containsKey("disk_size_gb") and task(get_approval).result.response.approved = true %>
+        publish:
+          - disk_size: <% task(get_approval).result.response.disk_size_gb %>
         do: extend_disk
       - when: <% succeeded and task(get_approval).result.response.approved = false %>
         do: stop
@@ -82,7 +92,7 @@ tasks:
     action: ansible.playbook
     input:
       playbook: /etc/ansible/extend-lvm.yml
-      extra_vars: [variable_host=nmc05]
+      extra_vars: [variable_host=<% ctx().instance %> size_gb=<% ctx().disk_size %>]
     next:
       - when: <% failed() %>
         do: failure
