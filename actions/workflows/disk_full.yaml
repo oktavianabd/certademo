@@ -43,8 +43,22 @@ tasks:
       # <% ctx().stdout %>
     next:
       - when: <% succeeded %>
-        do: get_approval 
-
+        do: 
+          - get_approval
+          - notify_to_email
+          
+  notify_to_email:
+    action: email.send_email
+    input:
+      account: me
+      email_to: oktavianrz@gmail.com
+      message: |
+        Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
+        Please check telegram if you want to extend disk space for approval
+        <% ctx().stdout_df %>
+      email_from: oktavianabd@gmail.com
+      subject: Alert!!! <% ctx().instance %> is out of disk space (<10% left)
+        
   get_approval:
     action: core.ask
     input:
