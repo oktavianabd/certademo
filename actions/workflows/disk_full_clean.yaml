@@ -19,7 +19,7 @@ tasks:
       - when: <% succeeded %>
         do: 
           # - notify
-          - notify_to_email
+          - notify_to_email 
         publish:
           - stdout: <% result().get(ctx().instance).stdout %>
   # checkdisksize:
@@ -32,17 +32,18 @@ tasks:
   #       do: notify
   #       publish:
   #         - stdout_df: <% result().get(ctx().instance).stdout %>
-  notify:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
-        List of log files, do you want to remove it?
-        <% ctx().stdout %>
-    next:
-      - when: <% succeeded %>
-        do: get_approval
+
+  # notify:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
+  #       List of log files, do you want to remove it?
+  #       <% ctx().stdout %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: get_approval
 
   notify_to_email:
     action: email.send_email
@@ -55,39 +56,39 @@ tasks:
       email_from: oktavianabd@gmail.com
       subject: Alert!!! Host is out of disk space (<10% left)
 
-  get_approval:
-    action: core.ask
-    input:
-      schema:
-        type: object
-        properties:
-          approved:
-            type: boolean
-            description: Do you want to continue to remove the log files?
-            required: True
-    next:
-      - when: <% succeeded and task(get_approval).result.response.approved = true %>
-        do: remove_logs
-      - when: <% succeeded and task(get_approval).result.response.approved = false %>
-        do: stop
+  # get_approval:
+  #   action: core.ask
+  #   input:
+  #     schema:
+  #       type: object
+  #       properties:
+  #         approved:
+  #           type: boolean
+  #           description: Do you want to continue to remove the log files?
+  #           required: True
+  #   next:
+  #     - when: <% succeeded and task(get_approval).result.response.approved = true %>
+  #       do: remove_logs
+  #     - when: <% succeeded and task(get_approval).result.response.approved = false %>
+  #       do: stop
   
-  stop:
-    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+  # stop:
+  #   action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
 
-  remove_logs:
-    action: core.remote_sudo
-    input:
-      cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
-      hosts: <% ctx().instance %>
-    next:
-      - when: <% failed() %>
-        do: failure
-        publish:
-          - rm_failed: <% result().get(ctx().instance).stderr %>
-      - when: <% succeeded() %>
-        do: success
-        publish:
-          - rm_success: <% result().get(ctx().instance).stdout %>
+  # remove_logs:
+  #   action: core.remote_sudo
+  #   input:
+  #     cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
+  #     hosts: <% ctx().instance %>
+  #   next:
+  #     - when: <% failed() %>
+  #       do: failure
+  #       publish:
+  #         - rm_failed: <% result().get(ctx().instance).stderr %>
+  #     - when: <% succeeded() %>
+  #       do: success
+  #       publish:
+  #         - rm_success: <% result().get(ctx().instance).stdout %>
 
   # extend_disk:
   #   action: ansible.playbook
@@ -131,17 +132,18 @@ tasks:
   #       <% ctx().disk_stdout %>
   #       Result: Extend <% ctx().mountpoint %> successful
   #       <% ctx().stdout_df_after %>
-  failure:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Result: Remove logs failed
-        <% ctx().rm_failed %>
-  success:
-    action: chatops.post_message
-    input:
-      channel: stackstorm-demo
-      message: |
-        Result: Remove logs successful
-        <% ctx().rm_success %>
+
+  # failure:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Result: Remove logs failed
+  #       <% ctx().rm_failed %>
+  # success:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Result: Remove logs successful
+  #       <% ctx().rm_success %>
