@@ -8,7 +8,11 @@ trigger:
   type: core.st2.generic.inquiry
 
 action:
-  ref: chatops.post_message
+  # ref: chatops.post_message
+  # parameters:
+  #   channel: "stackstorm-demo"
+  #   message: 'Inquiry {{trigger.id}} is waiting for an approval action'
+  ref: telegram.send_message
   parameters:
-    channel: "stackstorm-demo"
+    chat_id: "stackstorm-demo"
     message: 'Inquiry {{trigger.id}} is waiting for an approval action'
