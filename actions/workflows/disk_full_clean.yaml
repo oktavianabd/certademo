@@ -49,7 +49,7 @@ tasks:
     action: email.send_email
     input:
       account: me
-      email_to: oktavianrz@gmail.com
+      email_to: ["oktavianrz@gmail.com"]
       message: Host is out of disk space
       email_from: oktavianabd@gmail.com
       subject: Alert Host is out of disk space
