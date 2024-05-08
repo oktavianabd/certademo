@@ -14,5 +14,5 @@ action:
   #   message: 'Inquiry {{trigger.id}} is waiting for an approval action'
   ref: telegram.send_message
   parameters:
-    chat_id: "stackstorm-demo"
+    chat_id: "-4268324287"
     message: 'Inquiry {{trigger.id}} is waiting for an approval action'
