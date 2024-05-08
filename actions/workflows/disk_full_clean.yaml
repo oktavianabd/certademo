@@ -18,7 +18,7 @@ tasks:
     next:
       - when: <% succeeded %>
         do: 
-          - notify
+          # - notify
           - notify_to_email
         publish:
           - stdout: <% result().get(ctx().instance).stdout %>
