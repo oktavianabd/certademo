@@ -20,7 +20,7 @@ tasks:
         do: 
           - notify
           - notify_to_email
-          - notify_telegram
+          - notify_to_telegram
         publish:
           - stdout: <% result().get(ctx().instance).stdout %>
   # checkdisksize:
