@@ -53,7 +53,7 @@ tasks:
       email_to: ["oktavianrz@gmail.com"]
       message: |
         Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
-        List of log files, do you want to remove it?
+        List of log files, please open mattermost for approval to remove the logs
         <% ctx().stdout %>
       email_from: oktavianabd@gmail.com
       subject: Alert!!! <% ctx().instance %> is out of disk space
@@ -64,7 +64,7 @@ tasks:
       chat_id: -4268324287
       message: |
         Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
-        List of log files, do you want to remove it?
+        List of log files, please open mattermost for approval to remove the logs
         <% ctx().stdout %>
 
   get_approval:
