@@ -19,7 +19,8 @@ tasks:
       - when: <% succeeded %>
         do: 
           - notify
-          - notify_to_email 
+          - notify_to_email
+          - notify_telegram
         publish:
           - stdout: <% result().get(ctx().instance).stdout %>
   # checkdisksize:
@@ -52,10 +53,19 @@ tasks:
       email_to: ["oktavianrz@gmail.com"]
       message: |
         Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
-        Please see telegram for approval to remove the logs
+        Please see mattermost for approval to remove the logs
         <% ctx().stdout %>
       email_from: oktavianabd@gmail.com
       subject: Alert!!! <% ctx().instance %> is out of disk space
+
+  notify_to_telegram:
+    action: telegram.send_message
+    input:
+      chat_id: -4268324287
+      message: |
+        Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
+        Please see mattermost for approval to remove the logs
+        <% ctx().stdout %>
 
   get_approval:
     action: core.ask
