@@ -50,11 +50,9 @@ tasks:
     input:
       account: me
       email_to: oktavianrz@gmail.com
-      message: |
-        Host is out of disk space (<10% left)
-        Please check telegram for details and approval for extend disk space        
+      message: Host is out of disk space
       email_from: oktavianabd@gmail.com
-      subject: Alert!!! Host is out of disk space (<10% left)
+      subject: Alert Host is out of disk space
 
   # get_approval:
   #   action: core.ask
