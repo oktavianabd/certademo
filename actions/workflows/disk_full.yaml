@@ -28,9 +28,12 @@ tasks:
       hosts: <% ctx().instance %>
     next:
       - when: <% succeeded %>
-        do: notify
+        do: 
+          - notify
+          - notify_to_email
         publish:
           - stdout_df: <% result().get(ctx().instance).stdout %>
+  
   notify:
     action: chatops.post_message
     input:
@@ -43,10 +46,8 @@ tasks:
       # <% ctx().stdout %>
     next:
       - when: <% succeeded %>
-        do: 
-          - get_approval
-          - notify_to_email
-          
+        do: get_approval
+
   notify_to_email:
     action: email.send_email
     input:
