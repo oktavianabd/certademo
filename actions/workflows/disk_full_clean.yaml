@@ -52,7 +52,8 @@ tasks:
       message: |
         Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
         Please check telegram if you want to extend disk space for approval
-        <% ctx().stdout_df %>
+         <% ctx().stdout %>
+         
       email_from: oktavianabd@gmail.com
       subject: Alert!!! <% ctx().instance %> is out of disk space (<10% left)
 
