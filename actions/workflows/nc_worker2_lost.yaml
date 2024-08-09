@@ -45,8 +45,8 @@ tasks:
   turn_on_worker4:
     action: ansible.playbook
     input:
-      # playbook: /etc/ansible/turn-on-vm.yml
-      playbook: /etc/ansible/turn-on-vm-esxi.yml
+      playbook: /etc/ansible/turn-on-vm.yml
+      # playbook: /etc/ansible/turn-on-vm-esxi.yml
     next:
       - when: <% failed() %>
         do: failure
@@ -73,8 +73,8 @@ tasks:
   ssh_check:
     action: linux.wait_for_ssh
     input: 
-      # hostname: 10.63.20.4
-      hostname: 10.63.22.78
+      hostname: 10.63.20.4
+      # hostname: 10.63.22.78
       keyfile: /home/stanley/.ssh/stanley_rsa_ss_20_12
     next:
       - when: <% succeeded %>
