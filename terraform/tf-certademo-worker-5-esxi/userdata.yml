@@ -1,0 +1,73 @@
+#cloud-config
+# vim: syntax=yaml
+#
+# ***********************
+#   ---- for more examples look at: ------
+# ---> https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+# ******************************
+#
+# This is the configuration syntax that the write_files module
+# will know how to understand. encoding can be given b64 or gzip or (gz+b64).
+# The content will be decoded accordingly and then written to the path that is
+# provided.
+#
+# Note: Content strings here are truncated for example purposes.
+growpart:
+  mode: auto
+  devices: ['/']
+
+groups:
+  - okta
+
+users:
+  - name: root
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDP8J2XeEnp/sqMsk28/XLttVRVRlkwEHyk59dGwfL+AmdE16H6rYGv0+7zA1bodW0TTPrx5gnmNgxEXRNsb/sIuMRawsjT805QdUF0k/PrSgp4405pNf1b52stFBTibm3izba2mvwJKshayWk6l0rBNg5nBnO00wqDBOSf58v0yhorQkUUKJkvPZBPvLbNzzAwO9N9lzOp90TXBgseR1SiOqtaexifn2A4mNBwVL6iJdA77eNnv/xg0yUPrqgc6yBxVzbp6BPygU2ajeRJcVVS5gv2+C87ZBTEbCP6ZY1IDSfFR1SYjFg6vSdXp0NZVO8mrEPXMpHLaXMImF1HJyQ8/pZKRL0EqdQfTNAH8idrc/j/jsJwMk28dHdzQPfW42Rvg4LpYt2ajA1zNKs9sstYcW0zp8ep7nw2H3j1msGd1qDji8yfTcROk/vV4fyNS271gqpEgYKRmChzRWVWE+ToNwyuHMBzw6WCWqDg/ZAAuatVyJtikHGrPiQderKBrKc=
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8HcwOhig+V0Ac2Mhe+AhZMQxU/xBjc82K8Krkprr8JFLu3PnAc4pZvO2u/2oYe7fTS/pswX2Lk1aat+GkmmCeN3iK8bcOkbhEeNrlLqFAOQIiqgPlnG0ss5NPdP0EhBT9CKyaeKIdiZEB4chldJHa0aCQCcmkMoND1MzPn7u7WSstGjhYykmyLsawSO3VsKt9QWIHM6wF+yrBc7OjQrnI0RkMUwLOSlz2uDCXXhCwsjALy2xVZqXZFzw6Q6OQW09s8EZJL6h9zYB8nio5bSRo4Ugrlh9/HCIU+SXGafp2jWy/3X4Sg9seMnWJy3e8ady607ui7zckC/UguYuUott2Vw0aJ3sZ2WKKZDQyxqYWwt7/QUOy1y5WxwtR4ycoC3yTnnbUwr4ARZ8S9eAGcMLRmaNfStjcEq1NtVq2zmbEU5VBdzk7eoPeKCzi1/PMfz/aV8+pnI7TY0Cb24Z0g8HLYQ/e419cy13oSDbVG0LRbr4+bbPixHpj0Zn2zKHN4ck= root@ss01
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCpK5bmlcDz7KmashLQDy3vo4V9Gz130xPyigx0HZ5bsK0Td01wSOaC9xJr5kuJxWttlOe0TATnQ62dZ7cF2qEcjRouDYFxC12EHffgZO549IuulkLpQ8+LHCjIX3zQY8i1a9JlcV5eY6MCQRQxtiVHHMsqWUmNJxM+OotV37kcG0J6+hQAOGrg+IHtJskrIreaCFGI3MqHs1g9j7jmkE2ZO14LdProMyP5RYoMGq/Mh2y65sms/SFaLTcG0kEDqQjX3gXuyPHfz3HXgYw8bTPFNRbRElOJkZn89fPgcDpnjLX6Vx6zOThZwVjREw3LXRRPNKACRy+vtxNdShRlJiiXTRnmduYHAmp5q4N8EMajRAV7OUTDGwHkK+r8uKDPyM/GksmZ8av2w4JOPlz9eJYOXes5gCokylMQZFqI16CGzx6rn4daDxfy5jtquDfLEuMdgyoniErniu58/biinaxmvrYlHgFm+Z0JhnZMxTvK9xznORhhWpYZj5f532Pb0xE= okta@nmc01
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDeueJ7Et47UHJghyleDWd0IO7K0mlMCzDuPCJPJLaMkoNRPbBRUpla4aN42JWapSULj+9drphZlo9fy+Bvdb/jpMO0vduVmUzqdEW8ZIJFpSpTKhiMhT+ezHZqxeEotXXkvcwltAw39leRoOTFI5oUpaYxqP0Cfxo9SA89ScybonZQ4ZiSaEnerJ6OB0ngH1T1WIm8lV2JkcJaLjlkvSTzD7UAwuloT649/CWTzSr0gCJyTgmrMBHWgxH/wKs4H7bK+7kun6SzyJKM0gBcabi6EJ3ARp5tuLn0nZYxM1y/Ah6vIFFcXxLNgK2WGgyFWwbbAnH2XPn6ZNfL5DZA9fTYxVhfaAh4cgN/bUclYI2WGgcABHn1sj2oU/Bi0RwjkjKZYatTIVLoKRI7CDMwy9EYUwgByUasyiSuYgWA5+qqtHpDEyCFS/mjQUgltLiCdYhYp3FWA3OEi46uO6m33uC0GzUI1aH5rdH/Fxmw7TsbriDYRQ3NwFo6m7Kmw9lxf/8= root@nmc01
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCtVrB0Gcp1ta0TAgWrKl9ku541EVLohIpvYL2ANOTLGVbnQKEohLkcVQwKrSOJcsQQA/9dfqyc9GYY+/RVGgHHYmpYTmNZv3x6L2V9qsQe6W2Dv/pxXgd3fW7qmSJ0xhreif00IV+O05uM2WPHJYgC7xDy1t27w3teT5bXqxNgwEaCSJY3bHYd6mQp20hDkaOVB7etJnu/BSkro/Z2nW3PWTl2eF0LHuYzMtp1rTtEprs370uLvUr30GjTFGqyb9lsOrvGU43FmineFPPgkjl+lcuX4OztiqNHdk4NIDb4VFmzjCiNOP1XwoUiguO3ULx4/2B8MTcrfzY4794hT5hLC+BpRssRVzST55KyUwvE1zKWL11bYq/1POyG2XYkrp4KplBNAtEVRTbdi4x3q4Xinkeo5hA/7DmDCButPxhA87FbwXiBYzwPX+uy/27agvx+/TJeipLAUQolA1zOVsDd+2VLcwmEFTdHpPYlUPZ9knxLEqBAqDV6jIMe3LXCxxU= root@aro
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC2oW4MAuh/04F84LatDa0f1R9HBxOLdu6Fv5ToOGhKZyO4a2VxqcQ23srdC527Zs/kgtdLCXK1DL+jzGk2j5cFdFjxI/c2Skkj6HjfqFeqp75XdQSE5H0JCEEldpRNQl/ZJx6KsFH99q6FCAhJi5WmivNXQ+cNuylnzMD8GTFu1NQY8Qo7Kd569SGgKfl89cD7mu6S8XWZaPZjv1saa+ZiBEIhAziazH+Jry7QYtibwbfsaNPLErd3YwttvZcurE6wEYnMYXLeSJWpzy36ErwA9Ax3lQF/dFcqBu1ZkrMoZOy+RbNqJMOPCWGawHlVD3gKRsMYv+05e8my2UMIculhnXmOA1gHXQDaJL1xvWTWHhVeYfHzp08tj1jdMD5/fG3zFZaQXuCq5FBeYv2rL3nV5nbVX3JTRigcAiBpV2JQB0siMltsi54aHYatw3Warg8K3Li/gY0j/R5ZOP8/OUxV/kqzfpAvBWgWb2DxU2I8UuArl8Fhp4u7Fg1fkjSfEv0= okta@aro
+
+  - name: okta
+    primary_group: okta
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys: 
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC2oW4MAuh/04F84LatDa0f1R9HBxOLdu6Fv5ToOGhKZyO4a2VxqcQ23srdC527Zs/kgtdLCXK1DL+jzGk2j5cFdFjxI/c2Skkj6HjfqFeqp75XdQSE5H0JCEEldpRNQl/ZJx6KsFH99q6FCAhJi5WmivNXQ+cNuylnzMD8GTFu1NQY8Qo7Kd569SGgKfl89cD7mu6S8XWZaPZjv1saa+ZiBEIhAziazH+Jry7QYtibwbfsaNPLErd3YwttvZcurE6wEYnMYXLeSJWpzy36ErwA9Ax3lQF/dFcqBu1ZkrMoZOy+RbNqJMOPCWGawHlVD3gKRsMYv+05e8my2UMIculhnXmOA1gHXQDaJL1xvWTWHhVeYfHzp08tj1jdMD5/fG3zFZaQXuCq5FBeYv2rL3nV5nbVX3JTRigcAiBpV2JQB0siMltsi54aHYatw3Warg8K3Li/gY0j/R5ZOP8/OUxV/kqzfpAvBWgWb2DxU2I8UuArl8Fhp4u7Fg1fkjSfEv0= okta@aro
+
+# Integration with st2  
+  - name: stanley
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8HcwOhig+V0Ac2Mhe+AhZMQxU/xBjc82K8Krkprr8JFLu3PnAc4pZvO2u/2oYe7fTS/pswX2Lk1aat+GkmmCeN3iK8bcOkbhEeNrlLqFAOQIiqgPlnG0ss5NPdP0EhBT9CKyaeKIdiZEB4chldJHa0aCQCcmkMoND1MzPn7u7WSstGjhYykmyLsawSO3VsKt9QWIHM6wF+yrBc7OjQrnI0RkMUwLOSlz2uDCXXhCwsjALy2xVZqXZFzw6Q6OQW09s8EZJL6h9zYB8nio5bSRo4Ugrlh9/HCIU+SXGafp2jWy/3X4Sg9seMnWJy3e8ady607ui7zckC/UguYuUott2Vw0aJ3sZ2WKKZDQyxqYWwt7/QUOy1y5WxwtR4ycoC3yTnnbUwr4ARZ8S9eAGcMLRmaNfStjcEq1NtVq2zmbEU5VBdzk7eoPeKCzi1/PMfz/aV8+pnI7TY0Cb24Z0g8HLYQ/e419cy13oSDbVG0LRbr4+bbPixHpj0Zn2zKHN4ck= root@ss01
+    sudo: ALL=(ALL) NOPASSWD:ALL
+
+ssh_pwauth: True
+chpasswd:
+  list: |
+    root:password
+  expire: False
+disable_root: false
+
+runcmd:
+ - setenforce 0
+ - sed -i '/^SELINUX=/ s/=.*/=permissive/' /etc/selinux/config
+ - sed -i '/PermitRootLogin/s/.*/PermitRootLogin yes/' /etc/ssh/sshd_config 
+ - systemctl restart sshd
+ - sudo sed -i -r "s/^Defaults\s+\+requiretty/# Defaults +requiretty/g" /etc/sudoers
+ - setenforce 0
+
+hostname: "worker05"
+fqdn: "worker05.certa.systems"
+prefer_fqdn_over_hostname: false
+
+timezone: UTC
+packages:
+  - wget
+  - vim-enhanced
+  - qemu-guest-agent
+  - liburing
+  - net-tools
+  - unzip
+  - bind-utils
+  - nano
+  - nmap
