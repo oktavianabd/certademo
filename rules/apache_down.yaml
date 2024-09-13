@@ -1,0 +1,36 @@
+---
+name: "apache_down"
+pack: "certademo"
+description: "apache down"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "ApacheDown"
+    type: "equals"
+  trigger.body.alerts[0].status:
+    pattern: "firing"
+    type: "equals"
+
+action:
+  ref: "certademo.apache_down"
+  parameters:
+    hostip: "{{trigger.body.alerts[0].labels.instance}}"
+
+# action:
+#   ref: "chatops.post_message"
+#   parameters:
+#     channel: "stackstorm-demo"
+#     message: |
+#       status: {{trigger.body.alerts[0].status}}
+#       severity: {{trigger.body.alerts[0].labels.severity}}
+#       hostip: {{trigger.body.alerts[0].labels.instance}}
+#       startsAt: {{trigger.body.alerts[0].startsAt}}
+#       endsAt: {{trigger.body.alerts[0].endsAt}}
+#       description: {{trigger.body.alerts[0].annotations.description}}
+#       summary: {{trigger.body.alerts[0].annotations.summary}}

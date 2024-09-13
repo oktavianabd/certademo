@@ -1,0 +1,68 @@
+---
+- name: create new disk and mount point
+  hosts:
+    "{{ variable_host }}"
+  vars:
+    ansible_port: "22"
+    vcenter_hostname: "vcenter01.certa.systems"
+    vcenter_username: "administrator@vsphere.local"
+    vcenter_password: "P@ssw0rd"
+    vcenter_datacenter: "Datacenter01"
+    vmguest_name: "nmc05"
+  tasks:
+    - name: add new disk to vm guest 
+      community.vmware.vmware_guest_disk:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        datacenter: "{{ vcenter_datacenter }}"
+        validate_certs: false
+        name: "{{ vmguest_name }}"
+        disk:
+          - size_gb: 1
+            type: thin
+            datastore: esxistor1
+            state: present
+            scsi_controller: 1
+            unit_number: 1
+            scsi_type: 'paravirtual'
+            disk_mode: 'persistent'
+      delegate_to: localhost
+      register: vm_facts
+    - name: create partition
+      parted:
+        device: /dev/sdb
+        number: 1
+        flags: [lvm]
+        state: present
+        # part_end: 1GB
+    - name: creating volume group
+      lvg:
+        vg: var-vg
+        pvs: /dev/sdb1
+        pesize: 4
+    - name: install lvm2 dependency
+      package:
+        name: lvm2
+        state: present
+    - name: creating logical volume
+      lvol:
+        vg: var-vg
+        lv: var-lv
+        size: +100%FREE
+        force: yes
+    - name: create directory /var/data if does not exist
+      file:
+        path: /var/data
+        state: directory
+        mode: '0755'
+    - name: format xfs filesystem
+      filesystem:
+        type: xfs
+        dev: /dev/var-vg/var-lv
+    - name: mount the lv on /var/data
+      mount:
+        path: /var/data
+        src: /dev/var-vg/var-lv
+        fstype: xfs
+        state: mounted

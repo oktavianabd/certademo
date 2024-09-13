@@ -1,0 +1,25 @@
+---
+- name: install flog and generate log httpd log file
+  hosts:
+    "{{ variable_host }}"
+  vars:
+  tasks:
+    - name: install golang
+      package:
+        name: golang
+        state: present
+    - name: install flog
+      shell:
+        cmd: go install github.com/mingrammer/flog@latest
+        chdir: /root
+    - name: copy script for generate httpd log file
+      template:
+        src: /etc/ansible/templates/generate_httpd_log.sh.j2
+        dest: /root/generate_httpd_log.sh
+        owner: root
+        group: root
+        mode: '0700'
+    - name: run script for generate httpd log file
+      shell:
+        cmd: sh generate_httpd_log.sh
+        chdir: /root

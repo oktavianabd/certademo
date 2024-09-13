@@ -1,0 +1,23 @@
+---
+- name: Test remote access ansible
+  hosts: 
+    "{{ variable_host | default ('certa-worker') }}"
+  vars:
+    ansible_port: '22'
+  #gather_facts: false
+  tasks:
+    - name: Ping ip data
+      become: true
+      ping:
+
+    - name: Test sudoer
+      become: true
+      shell: whoami
+      register: sudoers_status
+
+    - name: Show sudoers 
+      become: true
+      debug:
+        msg:
+          - "Hostname: {{ansible_hostname}}"
+          - "User access: {{ sudoers_status.stdout }}"

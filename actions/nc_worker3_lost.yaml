@@ -1,0 +1,17 @@
+---
+name: "nc_worker3_lost"
+pack: "certademo"
+description: "handle nextcloud worker3 lost"
+runner_type: "orquesta"
+entry_point: "workflows/nc_worker3_lost.yaml"
+enabled: true
+
+parameters:
+  nomad_server:
+    type: "string"
+    description: "ip address of nomadserver"
+    required: false
+  # worker_3:
+  #   type: "string"
+  #   description: "ip address of worker-3"
+  #   required: false

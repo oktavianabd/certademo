@@ -1,0 +1,29 @@
+---
+- name: install dnsmasq
+  hosts:
+    "{{ variable_host }}"
+    #     - worker-4
+
+  tasks:
+    - name: install dnsmasq
+      become: true
+      ansible.builtin.shell: "dnf -y install dnsmasq"
+
+    - name: copy dnsmasq config to target
+      become: true
+      ansible.builtin.template:
+        src: ./templates/10-consul.j2
+        dest: /etc/dnsmasq.d/10-consul
+        backup: yes
+        mode: '640'
+
+    - name: enable dnsmasq
+      become: true
+      ansible.builtin.shell: "systemctl enable dnsmasq"
+
+    - name: start dnsmasq service
+      become: true
+      ansible.builtin.systemd:
+        name: dnsmasq
+        state: restarted
+

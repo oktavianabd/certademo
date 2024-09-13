@@ -1,0 +1,11 @@
+---
+ref: certademo
+name: certademo
+description: Collection of actions, rules and workflows for demo purpose
+keywords:
+  - webhook
+  - check service status
+  - disk remidiation
+version: 1.0.0
+author: okta
+email: oktaviab@certa.id

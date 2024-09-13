@@ -1,0 +1,10 @@
+- name: My play book
+  hosts: worker3
+  tasks:
+   - name: Ping my hosts
+     ansible.builtin.ping:
+   
+   - name: Print message
+     ansible.builtin.debug:
+      msg: Hello world
+

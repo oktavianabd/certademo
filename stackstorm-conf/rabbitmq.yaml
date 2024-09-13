@@ -1,0 +1,9 @@
+---
+sensor_config:
+  host: "10.63.23.116"
+  username: "sendev"
+  password: "password"
+  rabbitmq_queue_sensor:
+    queues:
+      - "demoqueue"
+    deserialization_method: "json"

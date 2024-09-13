@@ -1,0 +1,33 @@
+---
+- name: instal nextcloud dependencies 2/5
+  hosts:
+#    "{{ variable_host }}"
+#    - certa-db
+#    - certa-redis
+#    - certa-orc
+#    - certa-worker
+#    - backmon
+#    - gateway
+#    - okta-app
+#    - okta-rp
+#    - okta-lb
+     - worker-3
+#     - worker-4
+#     - worker-5     
+    
+  tasks:
+    - name: update repo
+      become: true
+      ansible.builtin.shell: "dnf update -y"
+
+    - name: install apache
+      become: true
+      ansible.builtin.shell: "dnf install -y httpd"
+
+    - name: copy virtual host config
+      become: true
+      ansible.builtin.template:
+        src: ./templates/nextcloud.conf.j2
+        dest: /etc/httpd/conf.d/nextcloud.conf
+        backup: yes
+        mode: '640'

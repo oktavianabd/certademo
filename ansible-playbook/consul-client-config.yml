@@ -1,0 +1,27 @@
+---
+- name: config consul server
+  hosts:
+    "{{ variable_host }}"    
+    #    - worker-4
+
+  tasks:
+   - name: copy consul config to target
+     become: true
+     ansible.builtin.template:
+       src: ./templates/consul-client-config.hcl.j2
+       dest: /etc/consul.d/consul.hcl
+       backup: yes
+       mode: '640'
+
+   - name: enable consul service with reload
+     become: true
+     ansible.builtin.systemd:
+       name: consul
+       enabled: yes
+       daemon_reload: yes
+   - name: start consul service
+     become: true
+     ansible.builtin.systemd:
+       name: consul
+       state: restarted
+

@@ -1,0 +1,28 @@
+---
+- name: config dns
+  hosts:
+    "{{ variable_host }}"
+    #     - worker-4
+
+  tasks:
+
+   - name: copy dnsmasq.conf
+     become: true
+     ansible.builtin.template:
+       src: ./templates/dnsmasq.conf.j2
+       dest: /etc/dnsmasq.conf
+       backup: yes
+       mode: '640'
+
+   - name: restart dnsmasq
+     become: true
+     ansible.builtin.shell: "systemctl restart dnsmasq"
+
+#   - name: add dns
+#     become: true
+#     ansible.builtin.shell: "nmcli conn modify 'enp1s0' ipv4.dns '127.0.0.1 10.63.16.1'"
+
+#   - name: reboot
+#     become: true
+#     ansible.builtin.shell: "reboot"
+

@@ -1,0 +1,5 @@
+host: 10.63.20.10
+pass: password
+port: 8080
+ssl: false
+user: admin

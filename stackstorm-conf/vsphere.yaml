@@ -1,0 +1,7 @@
+ssl_verify: false
+vsphere:
+  default:
+    host: "10.63.22.77"
+    passwd: yourpassword
+    port: 443
+    user: root

@@ -1,0 +1,23 @@
+---
+name: "ssl_expiry"
+pack: "certademo"
+description: "ssl expiry"
+enabled: true
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "SSLExpiry"
+    type: "equals"
+  trigger.body.alerts[0].status:
+    pattern: "firing"
+    type: "equals"
+
+action:
+  ref: "certademo.ssl_expiry"
+  parameters:
+    instance: "{{trigger.body.alerts[0].labels.instance}}"

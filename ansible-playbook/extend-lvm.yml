@@ -1,0 +1,56 @@
+---
+- name: extend lvm
+  hosts:
+    "{{ variable_host }}"
+  vars:
+    vcenter_hostname: "vcenter01.certa.systems"
+    vcenter_username: "administrator@vsphere.local"
+    vcenter_password: "P@ssw0rd"
+    vcenter_datacenter: "Datacenter01"
+    vmguest_name: "nmc05"
+    size_in_gb: "{{ size_gb }}"
+  tasks:
+    - name: add new disk to vm
+      community.vmware.vmware_guest_disk:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        datacenter: "{{ vcenter_datacenter }}"
+        validate_certs: false
+        name: "{{ vmguest_name }}"
+        disk:
+          - size_gb: " {{ size_in_gb }} "
+            type: thin
+            datastore: esxistor1
+            state: present
+            scsi_controller: 2
+            unit_number: 2
+            scsi_type: 'paravirtual'
+            disk_mode: 'persistent'
+      delegate_to: localhost
+      register: vm_facts
+    # - name: update kernel partition table
+    #   command:
+    - name: create partition
+      parted:
+        device: /dev/sdc
+        number: 1
+        flags: [lvm]
+        state: present
+        # part_end: 1GB
+    - name: rescan sdc disk
+      shell:
+        cmd: echo 1 > /sys/block/sdc/device/rescan    
+    # - name: resize pv
+    #   shell: 
+    - name: creating or resize vg on top of /dev/sdv1 and /dev/sdc1
+      lvg:
+        vg: var-vg
+        pvs: /dev/sdb1,/dev/sdc1
+        # pvresize: yes
+    - name: creating logical volume
+      lvol:
+        vg: var-vg
+        lv: var-lv
+        size: +100%FREE
+        resizefs: true

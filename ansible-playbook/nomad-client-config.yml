@@ -1,0 +1,27 @@
+---
+- name: config nomad client
+  hosts:
+    "{{ variable_host }}"
+    #     - worker-4
+
+  tasks:
+   - name: copy consul config to target
+     become: true
+     ansible.builtin.template:
+       src: ./templates/nomad-client-config.hcl.j2
+       dest: /etc/nomad.d/nomad.hcl
+       backup: yes
+       mode: '640'
+
+   - name: enable nomad service with reload
+     become: true
+     ansible.builtin.systemd:
+       name: nomad
+       enabled: yes
+       daemon_reload: yes
+   - name: start nomad service
+     become: true
+     ansible.builtin.systemd:
+       name: nomad
+       state: restarted
+

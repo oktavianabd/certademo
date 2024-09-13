@@ -1,0 +1,78 @@
+---
+- name: enable tls on existing consul cluster
+  hosts:
+    "{{ variable_host }}"
+    #    - worker-4
+
+  tasks:
+    - name: 0.1 flag which server hosts consul server
+      ansible.builtin.set_fact:
+        consul_role: "{{ (inventory_hostname in groups['certa-orc'] ) }}"
+        cacheable: yes
+    ########## Copy root CA to all Agents
+    - name: 1.0 Copy CA to all consul agents
+      become: true
+      ansible.builtin.copy:
+        src: ./certs/consul-agent-ca.pem
+        dest: /opt/consul/consul-agent-ca.pem
+    ######## config on Consul Servers
+    - name: 1.1 Copy server certs and key to Consul Servers
+      become: true
+      when: ansible_facts['consul_role'] == True
+      ansible.builtin.copy:
+        src: "./certs/{{item}}"
+        dest: "/opt/consul/{{item}}"
+        mode: "0755"
+      with_items:
+        - certa-dc-server-consul-0.pem
+        - certa-dc-server-consul-0-key.pem
+    - name: 1.2 Copy server-tls.hcl for Consul Servers
+      become: true
+      when: ansible_facts['consul_role'] == True
+      ansible.builtin.copy:
+        src: ./certs/server-tls.hcl
+        dest: /etc/consul.d/server-tls.hcl
+    - name: 1.3 restart consul servers
+      become: true
+      when: ansible_facts['consul_role'] == True
+      ansible.builtin.systemd:
+        name: consul
+        state: restarted
+    - name: 1.4 Pause for 10s
+      ansible.builtin.pause:
+        seconds: 10
+    #### config on Consul Clients
+    - name: 2.1 Copy client-tls.hcl to Consul Clients
+      become: true
+      when: ansible_facts['consul_role'] == False
+      ansible.builtin.copy:
+        src: ./certs/client-tls.hcl
+        dest: /etc/consul.d/client-tls.hcl
+    - name: 2.2 restart consul clients
+      become: true
+      when: ansible_facts['consul_role'] == False
+      ansible.builtin.systemd:
+        name: consul
+        state: restarted
+    - name: 2.3 Pause for 10s
+      ansible.builtin.pause:
+        seconds: 10
+    ##### Reloading Consul Servers configs with active TLS
+    - name: 3.1 Reconfig Consul Servers with enabled TLS verification
+      become: true
+      when: ansible_facts['consul_role'] == True
+      ansible.builtin.lineinfile:
+        path: /etc/consul.d/server-tls.hcl
+        regexp: "^\\W+{{item.key}} "
+        line: "{{item.key}} = {{item.value}}"
+      with_items:
+        - { key: "verify_incoming ", value: "true" }
+        - { key: "verify_outgoing ", value: "true" }
+        - { key: "verify_server_hostname", value: "true" }
+    - name: 3.2 restart consul clients
+      become: true
+      when: ansible_facts['consul_role'] == True
+      ansible.builtin.systemd:
+        name: consul
+        state: restarted
+

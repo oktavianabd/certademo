@@ -1,0 +1,57 @@
+---
+- name: instal nextcloud dependencies 6/6 
+  hosts:
+    "{{ variable_host }}"
+  remote_user: root
+  vars:
+    nc_datastore: /mnt/nextcloud-data
+  
+  tasks:
+  - name: Install glusterfs-client
+    ansible.builtin.dnf:
+      name: glusterfs-client
+  - name: Create new mount point
+    ansible.builtin.file:
+      path: "{{ nc_datastore }}"
+      state: directory
+      mode: '0775'
+  # - name: mount glustersf
+  #   ansible.builtin.shell: |
+  #     mount -t glusterfs 10.63.20.8:/gv0 /mnt/nextcloud-data
+  #   tags: mount_glusterfs
+  - name: Mount glusterfs volume
+    ansible.posix.mount:
+      src: 10.63.20.8:/gv0
+      path: "{{ nc_datastore }}"
+      fstype: glusterfs
+      state: mounted
+  - name: Mount persistent even after machine reboot
+    ansible.posix.mount:
+      src: 10.63.20.8:/gv0
+      path: "{{ nc_datastore }}"
+      fstype: glusterfs
+      state: present
+      opts: defaults,_netdev
+      fstab: /etc/fstab
+  # - name: download data
+  #   become: true
+  #   ansible.builtin.shell: "wget --no-check-certificate https://10.63.20.2/download/nc-data.zip -O nc-data.zip"
+  #   args:
+  #     chdir: "{{ nc_datastore }}"
+  # - name: unzip nextcloud data
+  #   become: true
+  #   ansible.builtin.shell: "unzip -o nc-data.zip"
+  #   args:
+  #     chdir: "{{ nc_datastore }}"
+  # - name: Change ownership
+  #   ansible.builtin.file:
+  #     path: "{{ nc_datastore }}"
+  #     state: directory
+  #     recurse: yes
+  #     owner: apache
+  #     group: apache
+  # - name: mount persistent after reboot machine
+  #   ansible.builtin.lineinfile:
+  #     path: /etc/fstab
+  #     line: 10.63.20.8:/gv0 /mnt/nextcloud-data glusterfs defaults,_netdev 0 0
+      

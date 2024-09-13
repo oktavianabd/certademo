@@ -1,0 +1,37 @@
+---
+- name: instal nextcloud dependencies 3/5
+  hosts:
+    "{{ variable_host }}"
+#    - certa-db
+#    - certa-redis
+#    - certa-orc
+#    - certa-worker
+#    - backmon
+#    - gateway
+#    - okta-app
+#    - okta-rp
+#    - okta-lb
+#     - worker-3
+#     - worker-4
+#     - worker-5
+
+  tasks:
+    - name: install php
+      become: true
+      ansible.builtin.shell: "dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm"
+
+    - name: install yum-utils
+      become: true
+      ansible.builtin.shell: "dnf install -y yum-utils"
+
+    - name: reset php
+      become: true
+      ansible.builtin.shell: "dnf module reset php -y"
+
+    - name: install php module stream
+      become: true
+      ansible.builtin.shell: "dnf module install -y php:remi-8.2"
+
+    # - name: update repo
+    #   become: true
+    #   ansible.builtin.shell: "dnf update"

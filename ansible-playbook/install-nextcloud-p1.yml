@@ -1,0 +1,24 @@
+---
+- name: instal nextcloud dependencies 1/5
+  hosts:
+    "{{ variable_host }}"
+#    - certa-db
+#    - certa-redis
+#    - certa-orc
+#    - certa-worker
+#    - backmon
+#    - gateway
+#    - okta-app
+#    - okta-rp
+#    - okta-lb
+#     - worker-3
+#     - worker-4
+#     - worker-5
+
+  tasks:
+    - name: install dependencies
+      become: true
+      ansible.builtin.shell: "dnf install -y epel-release yum-utils unzip curl wget bash-completion policycoreutils-python-utils mlocate bzip2"
+    # - name: install java
+    #   become: true
+    #   ansible.builtin.shell: "dnf install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel"

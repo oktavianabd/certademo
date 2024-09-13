@@ -1,0 +1,63 @@
+---
+- name: instal nextcloud dependencies 4/5
+  hosts:
+    "{{ variable_host }}"
+#    - certa-db
+#    - certa-redis
+#    - certa-orc
+#    - certa-worker
+#    - backmon
+#    - gateway
+#    - okta-app
+#    - okta-rp
+#    - okta-lb
+#     - worker-3
+#     - worker-4
+#     - worker-5
+
+  tasks:
+    - name: install php
+      become: true
+      ansible.builtin.shell: "dnf install -y php php-gd php-process php-mbstring php-intl php-pecl-apcu php-mysqlnd php-opcache php-json php-zip php-pgsql php-pdo_pgsql"
+
+    - name: install php redis
+      become: true
+      ansible.builtin.shell: "dnf install -y php-redis php-imagick"
+
+    - name: Enable redis session locking in php.ini file
+      ansible.builtin.lineinfile:
+        backup: false
+        path: /etc/php.d/50-redis.ini
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      loop:
+        - { regexp: '^redis.session.locking_enabled', line: 'redis.session.locking_enabled = 1' }
+        - { regexp: '^redis.session.lock_retries', line: 'redis.session.lock_retries = -1' }
+        - { regexp: '^redis.session.lock_wait_time', line: 'redis.session.lock_wait_time = 10000' }
+
+    - name: download nextcloud latest
+      become: true
+      ansible.builtin.shell: "wget --no-check-certificate https://10.63.20.2/download/latest.zip"
+
+    - name: unzip nextcloud
+      become: true
+      ansible.builtin.shell: "unzip -o latest.zip"
+
+    - name: copy nextcloud to /var/www/html
+      become: true
+      ansible.builtin.shell: "cp -R nextcloud /var/www/html/"
+
+    # - name: create folder nextcloud data
+    #   become: true
+    #   ansible.builtin.shell: "mkdir -p /var/www/html/nextcloud/data"
+
+    - name: enable php-fpm
+      become: true
+      ansible.builtin.shell: "systemctl enable php-fpm"
+
+    - name: start php-fpm service
+      become: true
+      ansible.builtin.systemd:
+        name: php-fpm
+        state: restarted

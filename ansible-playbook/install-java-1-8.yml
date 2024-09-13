@@ -1,0 +1,17 @@
+---
+- name: instal java 1.8
+  hosts:
+    "{{ variable_host }}"    
+    #     - worker-4
+
+
+  tasks:
+    - name: install yum-utils
+      become: true
+      ansible.builtin.shell: "yum install -y yum-utils"
+
+    - name: install java
+      become: true
+      ansible.builtin.shell: "dnf install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel"
+
+

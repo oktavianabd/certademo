@@ -1,0 +1,22 @@
+---
+- name: add stanley username to remote host
+  hosts:
+    "{{ variable_host }}"
+  vars:
+    template_destination: '/home/testokta/.ssh'
+    template_source: '/etc/ansible/templates/authorized_keys.j2'
+    file_destination: "{{ keyfilename }}"
+  tasks:
+    - name: create user
+      ansible.builtin.user:
+        name: testokta
+    - name: create ssh directory
+      ansible.builtin.file:
+        path: '{{ template_destination }}'
+        state: directory
+        mode: '0700'
+    - name: copy ssh key
+      ansible.builtin.template:
+        src: '{{ template_source }}'
+        dest: '{{ template_destination }}/{{file_destination}}'
+        mode: '0600'

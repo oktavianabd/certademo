@@ -1,0 +1,19 @@
+---
+- name: instal consul
+  hosts:
+    "{{ variable_host }}"    
+    #     - worker-4
+
+
+  tasks:
+    - name: install yum-utils
+      become: true
+      ansible.builtin.shell: "yum install -y yum-utils wget curl unzip nano vim-enhanced liburing net-tools bind-utils nmap"
+
+    - name: update repo hashicorp
+      become: true
+      ansible.builtin.shell: "yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
+
+    - name: install consul
+      become: true
+      ansible.builtin.shell: "yum install -y consul"

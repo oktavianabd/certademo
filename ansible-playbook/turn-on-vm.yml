@@ -1,0 +1,12 @@
+---
+- name: turn-on VM
+  hosts:
+    - nmc01
+  gather_facts: false
+
+  tasks:
+    - name: turn-on worker-4
+      become: true
+      community.libvirt.virt:
+        name: worker-4
+        state: running

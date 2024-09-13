@@ -1,0 +1,162 @@
+---
+version: 1.0
+name: disk_full
+description: handle when host out of disk space
+
+input:
+  - instance
+  - mountpoint
+  - nodename
+# output:
+#   - stdout: <% ctx(stdout) %>
+
+tasks:
+  # checkdisk:
+  #   action: core.remote_sudo
+  #   input:
+  #     cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec ls -lahtr {} +
+  #     hosts: <% ctx().instance %>
+  #   next:
+  #     - when: <% succeeded %>
+  #       do: notify
+  #       publish:
+  #         - stdout: <% result().get(ctx().instance).stdout %>
+  checkdisksize:
+    action: core.remote_sudo
+    input:
+      cmd: df -h <% ctx().mountpoint %>
+      hosts: <% ctx().instance %>
+    next:
+      - when: <% succeeded %>
+        do: 
+          - notify
+          - notify_to_email
+        publish:
+          - stdout_df: <% result().get(ctx().instance).stdout %>
+  
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
+        Do you want to extend the disk space?
+        <% ctx().stdout_df %>
+      # List of log files, do you want to remove it?
+      # <% ctx().stdout %>
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+
+  notify_to_email:
+    action: email.send_email
+    input:
+      account: me
+      email_to: oktavianrz@gmail.com
+      message: |
+        Alert: Mountpoint <% ctx().mountpoint %> on <% ctx().instance %> is out of disk space (<10% left)
+        Please check telegram if you want to extend disk space for approval
+        <% ctx().stdout_df %>
+      email_from: oktavianabd@gmail.com
+      subject: Alert!!! <% ctx().instance %> is out of disk space (<10% left)
+        
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: Do you want to continue to resize the disk?
+            required: True
+          disk_size_gb:
+            type: number
+            description: Desired size of disk in GigaByte
+    # next:
+    #   - when: <% succeeded and task(get_approval).result.response.approved = true %>
+    #     do: extend_disk
+    #   - when: <% succeeded and task(get_approval).result.response.approved = false %>
+    #     do: stop
+    next:
+      - when: <% task(get_approval).result.response.containsKey("disk_size_gb") and task(get_approval).result.response.approved = true %>
+        publish:
+          - disk_size: <% task(get_approval).result.response.disk_size_gb %>
+        do: extend_disk
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+  
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+
+  # remove_logs:
+  #   action: core.remote_sudo
+  #   input:
+  #     cmd: find <% ctx().mountpoint %> -name "*" -type f -mtime +6 -exec rm -vf {} \;
+  #     hosts: <% ctx().instance %>
+  #   next:
+  #     - when: <% failed() %>
+  #       do: failure
+  #       publish:
+  #         - rm_failed: <% result().get(ctx().instance).stderr %>
+  #     - when: <% succeeded() %>
+  #       do: success
+  #       publish:
+  #         - rm_success: <% result().get(ctx().instance).stdout %>
+
+  extend_disk:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/extend-lvm.yml
+      extra_vars: [variable_host=<% ctx().nodename %> size_gb=<% ctx().disk_size %>]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - disk_stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: checkdisksize_after
+        publish:
+          - disk_stdout: <% result().stdout %>
+  
+  failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Result: Extend disk failed
+        <% ctx().disk_stderr %>
+
+  checkdisksize_after:
+    action: core.remote_sudo
+    input:
+      cmd: df -h <% ctx().mountpoint %>
+      hosts: <% ctx().instance %>
+    next:
+      - when: <% succeeded %>
+        do: success
+        publish:
+          - stdout_df_after: <% result().get(ctx().instance).stdout %>
+
+  success:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().disk_stdout %>
+        Result: Extend <% ctx().mountpoint %> successful
+        <% ctx().stdout_df_after %>
+  # failure:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Result: Remove logs failed
+  #       <% ctx().rm_failed %>
+  # success:
+  #   action: chatops.post_message
+  #   input:
+  #     channel: stackstorm-demo
+  #     message: |
+  #       Result: Remove logs successful
+  #       <% ctx().rm_success %>

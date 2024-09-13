@@ -1,0 +1,115 @@
+---
+- name: instal nextcloud
+  hosts:
+#    - certa-db
+#    - certa-redis
+#    - certa-orc
+#    - certa-worker
+#    - backmon
+#    - gateway
+#    - okta-app
+#     - okta-rp
+#     - okta-lb
+     - worker3
+
+
+  tasks:
+    - name: install dependencies
+      become: true
+      ansible.builtin.shell: "dnf install -y epel-release yum-utils unzip curl wget bash-completion policycoreutils-python-utils mlocate bzip2"
+
+    - name: update repo
+      become: true
+      ansible.builtin.shell: "dnf update -y"
+
+    - name: install apache
+      become: true
+      ansible.builtin.shell: "dnf install -y httpd"
+
+    - name: copy virtual host config
+      become: true
+      ansible.builtin.template:
+        src: ./templates/nextcloud.conf.j2
+        dest: /etc/httpd/conf.d/nextcloud.conf
+        backup: yes
+        mode: '640'
+
+    - name: install php
+      become: true
+      ansible.builtin.shell: "dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm"
+
+    - name: install yum-utils
+      become: true
+      ansible.builtin.shell: "dnf install -y yum-utils"
+
+    - name: reset php
+      become: true
+      ansible.builtin.shell: "dnf module reset php -y"
+
+    - name: install php module stream
+      become: true
+      ansible.builtin.shell: "dnf module install -y php:remi-8.2"
+
+    - name: update repo
+      become: true
+      ansible.builtin.shell: "dnf update"
+
+    - name: install php
+      become: true
+      ansible.builtin.shell: "dnf install -y php php-gd php-mbstring php-intl php-pecl-apcu php-mysqlnd php-opcache php-json php-zip php-pgsql php-pdo_pgsql"
+
+    - name: install php redis
+      become: true
+      ansible.builtin.shell: "dnf install -y php-redis php-imagick"
+
+    - name: download nextcloud latest
+      become: true
+      ansible.builtin.shell: "wget --no-check-certificate https://10.63.20.2/download/latest.zip"
+
+    - name: unzip nextcloud
+      become: true
+      ansible.builtin.shell: "unzip -o latest.zip"
+
+    - name: copy nextcloud to /var/www/html
+      become: true
+      ansible.builtin.shell: "cp -R nextcloud /var/www/html/"
+
+    - name: install apache
+      become: true
+      ansible.builtin.shell: "mkdir -p /var/www/html/nextcloud/data"
+
+    - name: enable php-fpm
+      become: true
+      ansible.builtin.shell: "systemctl enable php-fpm"
+
+    - name: start php-fpm service
+      become: true
+      ansible.builtin.systemd:
+        name: php-fpm
+        state: restarted
+
+
+    - name: copy config.php
+      become: true
+      ansible.builtin.template:
+        src: ./templates/nextcloud-config.php.j2
+        dest: /var/www/html/nextcloud/config/config.php
+        backup: yes
+        mode: '640'
+
+    - name: download data
+      become: true
+      ansible.builtin.shell: "wget --no-check-certificate https://10.63.20.2/download/nc-data.zip"
+      args:
+        chdir: "/var/www/html/nextcloud/data"
+
+    - name: unzip nextcloud data
+      become: true
+      ansible.builtin.shell: "unzip -o nc-data.zip"
+      args:
+        chdir: "/var/www/html/nextcloud/data"
+
+    - name: chown nextcloud
+      become: true
+      ansible.builtin.shell: "chown -R apache:apache /var/www/html/nextcloud/"
+

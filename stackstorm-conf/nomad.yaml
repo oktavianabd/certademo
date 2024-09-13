@@ -1,0 +1,7 @@
+---
+host: '10.63.20.75'
+cert: ''
+token: ''
+region: ''
+verify: false
+secure: false

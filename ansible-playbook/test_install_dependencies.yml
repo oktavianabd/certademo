@@ -1,0 +1,29 @@
+---
+- name: Install nextcloud dependencies
+  hosts: "{{ variable_host }}"
+  remote_user: root
+  vars:
+    packages_to_install:
+      - epel-release
+      - yum-utils
+      - unzip
+      - curl
+      - wget
+      - bash-completion
+      - policycoreutils-python-utils
+      - mlocate
+      - bzip2
+      - nano
+      - bind-utils
+      - httpd
+  tasks:
+  - name: Get installed packages
+    ansible.builtin.dnf:
+      list: "installed"
+    register: installed_packages
+
+  - name: Install missing packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items: "{{ packages_to_install | difference(installed_packages | json_query('results[*].name')) }}"

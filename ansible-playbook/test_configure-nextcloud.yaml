@@ -1,0 +1,46 @@
+---
+- name: configure nextcloud
+  hosts: "{{ variable_host }}"
+  tasks:
+    - name: Enable redis session locking in php.ini file
+      ansible.builtin.lineinfile:
+        backup: false
+        path: /etc/php.d/50-redis.ini
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      loop:
+        - { regexp: '^redis.session.locking_enabled', line: 'redis.session.locking_enabled = 1' }
+        - { regexp: '^redis.session.lock_retries', line: 'redis.session.lock_retries = -1' }
+        - { regexp: '^redis.session.lock_wait_time', line: 'redis.session.lock_wait_time = 10000' }
+          #loop_control:
+          #label: "{{ item.regexp }}"
+      notify:
+        - Restart php-fpm
+    - name: Files scan and maintenance nextcloud occ
+      ansible.builtin.shell: 
+      args:  
+        chdir: /var/www/html/nextcloud
+        cmd: "{{ item }}"
+      with_items:
+        - "sudo -u apache php occ files:scan-app-data"
+        - "sudo -u apache php occ maintenance:repair"
+    #   register: res
+    # - name: List of nextcloud data directory
+    #   ansible.builtin.shell:
+    #     chdir: /var/www/html/nextcloud/data
+    #     cmd: ls -lahtr
+    #   register: result
+    # - name: show nextcloud data directory
+    #   ansible.builtin.debug:
+    #     # msg: "Hello {{ res | to_nice_json }}"
+    #     var: "{{ item }}"
+    #   with_items:
+    #     - "result.cmd"
+    #     - "result.stdout_lines"
+    #     - "res | json_query('results[*].stdout_lines')"
+  handlers:
+    - name: Restart php-fpm
+      ansible.builtin.service:
+        name: php-fpm
+        state: restarted

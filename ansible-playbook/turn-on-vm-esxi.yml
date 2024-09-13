@@ -1,0 +1,18 @@
+---
+- name: turn-on VM
+  hosts:
+     - esx01
+  gather_facts: false
+
+  tasks:
+    - name: Set state of worker04 to poweron
+      become: true
+      community.vmware.vmware_guest_powerstate:
+        hostname: "10.63.22.77"
+        username: "root"
+        password: "P@ssw0rd"
+        name: "worker04"
+        state: powered-on
+        validate_certs: no
+      delegate_to: localhost
+      register: deploy

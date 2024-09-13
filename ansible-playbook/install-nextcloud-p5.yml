@@ -1,0 +1,90 @@
+---
+- name: instal nextcloud dependencies 5/5 
+  hosts: 
+    "{{ variable_host }}"
+  vars:
+    nc_datastore: /mnt/nextcloud-data
+#    - certa-db
+#    - certa-redis
+#    - certa-orc
+#    - certa-worker
+#    - backmon
+#    - gateway
+#    - okta-app
+#    - okta-rp
+#    - okta-lb
+#     - worker-3
+#     - worker-4
+#     - worker-5
+     
+  tasks:
+    - name: copy config.php
+      become: true
+      ansible.builtin.template:
+        src: ./templates/nextcloud-config.php.j2
+        dest: /var/www/html/nextcloud/config/config.php
+        backup: yes
+        mode: '640'
+    - name: Install glusterfs-client
+      ansible.builtin.dnf:
+        name: glusterfs-client
+    - name: Create new mount point for nextcloud-data
+      ansible.builtin.file:
+        path: "{{ nc_datastore }}"
+        state: directory
+        mode: '0775'
+    - name: Mount glusterfs volume
+      ansible.posix.mount:
+        src: 10.63.20.8:/gv0
+        path: "{{ nc_datastore }}"
+        fstype: glusterfs
+        state: mounted
+      tags: mount_glusterfs
+    # - name: Download nextcloud data
+    #   become: true
+    #   ansible.builtin.shell: "wget --no-check-certificate https://10.63.20.2/download/nc-data.zip -O nc-data.zip"
+    #   args:
+    #     chdir: "{{ nc_datastore }}"
+    # - name: unzip nextcloud data
+    #   become: true
+    #   ansible.builtin.shell: "unzip -o nc-data.zip"
+    #   args:
+    #     chdir: "{{ nc_datastore }}"
+    # - name: Change ownership nextcloud data
+    #   ansible.builtin.file:
+    #     path: "{{ nc_datastore }}"
+    #     state: directory
+    #     recurse: yes
+    #     owner: apache
+    #     group: apache
+    - name: Mount persistent even after machine reboot
+      ansible.posix.mount:
+        src: 10.63.20.8:/gv0
+        path: "{{ nc_datastore }}"
+        fstype: glusterfs
+        state: present
+        opts: defaults,_netdev
+        fstab: /etc/fstab
+    # - name: download data
+    #   become: true
+    #   ansible.builtin.shell: "wget --no-check-certificate https://10.63.20.2/download/nc-data.zip -O nc-data.zip"
+    #   args:
+    #     chdir: "/var/www/html/nextcloud/data"
+    # - name: unzip nextcloud data
+    #   become: true
+    #   ansible.builtin.shell: "unzip -o nc-data.zip"
+    #   args:
+    #     chdir: "/var/www/html/nextcloud/data"
+
+    - name: Change ownership nextcloud folder
+      become: true
+      ansible.builtin.shell: "chown -R apache:apache /var/www/html/nextcloud/"
+
+    - name: Refresh nextcloud
+      ansible.builtin.shell: 
+      args:  
+        chdir: /var/www/html/nextcloud
+        cmd: "{{ item }}"
+      with_items:
+        - "sudo -u apache php occ files:scan-app-data"
+        - "sudo -u apache php occ maintenance:repair"

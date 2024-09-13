@@ -1,0 +1,15 @@
+---
+vcenter_hostname: "vcenter01.certa.systems"
+vcenter_datacenter: "Datacenter01"
+vcenter_validate_certs: false
+vcenter_username: "administrator@vsphere.local"
+vcenter_password: "P@ssw0rd"
+vm_name: "worker04"
+vm_disk_gb: 1
+vm_disk_type: "thin"
+vm_disk_datastore: "esxistor1"
+vm_disk_scsi_controller: 1
+vm_disk_scsi_unit: 1
+vm_disk_scsi_type: 'paravirtual'
+vm_disk_mode: 'persistent'
+

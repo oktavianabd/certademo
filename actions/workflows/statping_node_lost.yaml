@@ -1,0 +1,70 @@
+---
+version: 1.0
+name: statping_node_lost
+description: handle node lost of statping approval
+
+input:
+ - node_name
+ - nomad_server 
+
+output:
+  - stdout: <% ctx(stdout) %>
+
+tasks:
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Alert: Node <% ctx().node_name %> lost
+        Do you want to switchover to the service?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: "Do you want to switchover the service"
+            required: true
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: switchover
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+
+  switchover:
+    action: core.remote_sudo
+    input:
+      cmd: nmcli connection up con-eth0
+      hosts: 10.63.20.4
+    next:
+      - when: <% succeeded %>
+        do: checkjobstatus
+  
+  checkjobstatus:
+    action: core.remote_sudo
+    input:
+      cmd: nomad job status -address=http://10.63.20.226:4646 -namespace=app statping
+      hosts: <% ctx().nomad_server %>
+    next:
+      - when: <% succeeded %>
+        do: finish
+        publish:
+          - stdout: <% result().get(ctx().nomad_server).stdout %>
+
+  finish:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Switchover completed
+        <% ctx().stdout %>
