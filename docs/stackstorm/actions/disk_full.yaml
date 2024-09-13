@@ -1,0 +1,15 @@
+---
+name: "disk_full"
+pack: "certademo"
+description: "handle when host out of disk space"
+runner_type: "orquesta"
+entry_point: "workflows/disk_full.yaml"
+enabled: true
+
+parameters:
+  instance:
+    type: "string"
+    description: "a hostip"
+  mountpoint:
+    type: "string"
+    description: "mount point"

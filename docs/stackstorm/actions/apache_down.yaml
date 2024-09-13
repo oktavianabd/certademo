@@ -1,0 +1,13 @@
+---
+name: "apache_down"
+pack: "certademo"
+description: "handle apache down service"
+runner_type: "orquesta"
+entry_point: "workflows/apache_down.yaml"
+enabled: true
+
+parameters:
+  hostip:
+    type: "string"
+    description: "a hostip of apache service"
+    required: true

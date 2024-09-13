@@ -1,0 +1,214 @@
+---
+version: 1.0
+name: "nc_worker1_lost"
+description: handle nextcloud worker1 lost, it will install dependencies on worker3
+
+input:
+  - nomad_server 
+  - worker_3
+
+output: 
+  - stdout_worker_3: <% ctx(stdout_worker_3) %>
+
+tasks:
+  check_worker3:
+    action: core.remote_sudo
+    input: 
+      cmd: "systemctl status php-fpm.service | head -n 3 | tail -n 1"
+      hosts: <% ctx().worker_3 %>
+    next:
+      - when: <% succeeded %>
+        do: notify_check_worker_3
+        publish:
+          - stdout_worker_3: <% result().get(ctx().worker_3).stdout %>
+
+  notify_check_worker_3:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Pre-check, worker-3 status
+        <% ctx().stdout_worker_3 %>
+    next:
+      - when: <% succeeded %>
+        do: notify
+
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Alert: The nextcloud service on worker-1 is lost
+        Do you want to rebuild the service to worker-3?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: "Do you want to switchover the service"
+            required: true
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: rebuild_nc_01
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, Automation stopped."
+
+  rebuild_nc_01:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p1.yml
+      extra_vars: [variable_host=worker-3]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_01
+        publish:
+          - stdout_01: <% result().stdout %>
+
+  post_rebuild_nc_01:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_01 %>
+        Status: Install nextcloud dependencies 1/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_02
+
+  rebuild_nc_02:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p2.yml
+      extra_vars: [variable_host=worker-3]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_02
+        publish:
+          - stdout_02: <% result().stdout %>
+  
+  post_rebuild_nc_02:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_02 %>
+        Status: Install nextcloud dependencies 2/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_03
+
+  rebuild_nc_03:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p3.yml
+      extra_vars: [variable_host=worker-3]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_03
+        publish:
+          - stdout_03: <% result().stdout %>
+
+  post_rebuild_nc_03:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_03 %>
+        Status: Install nextcloud dependencies 3/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_04
+
+  rebuild_nc_04:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p4.yml
+      extra_vars: [variable_host=worker-3]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: post_rebuild_nc_04
+        publish:
+          - stdout_04: <% result().stdout %>
+  
+  post_rebuild_nc_04:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_04 %>
+        Status: Install nextcloud dependencies 4/5 completed
+    next:
+      - when: <% succeeded() %>
+        do: rebuild_nc_05
+
+  rebuild_nc_05:
+    action: ansible.playbook
+    input:
+      playbook: /etc/ansible/install-nextcloud-p5.yml
+      extra_vars: [variable_host=worker-3]
+    next:
+      - when: <% failed() %>
+        do: failure
+        publish:
+          - stderr: <% result().stderr %>
+      - when: <% succeeded() %>
+        do: success
+        publish:
+          - stdout_05: <% result().stdout %>
+
+  failure:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stderr %>
+        Result: Run ansible playbook or terraform failure, rebuild nextcloud failure, please check the playbook file
+        Thank you
+
+  # test_httpd:
+  #   action: core.local
+  #   input:
+  #     cmd: curl -I -s http://10.63.20.231/index.php/login | head -n 1
+  #   next:
+  #     - when: <% succeeded() %>
+  #       do: success
+  #       publish:
+  #         - curl_result: <% result().stdout %>
+
+  success:
+    action: chatops.post_message 
+    input:
+      channel: stackstorm-demo
+      message: |
+        <% ctx().stdout_05 %>
+        Status: Install nextcloud dependencies 5/5 completed.
+        Result: Rebuild nextcloud on worker-3 successful.
+
+  #     Nextcloud HTTP response status: <% ctx().curl_result %>
+

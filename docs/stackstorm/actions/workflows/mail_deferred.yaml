@@ -1,0 +1,60 @@
+---
+version: 1.0
+name: mail_deferred
+description: handle when mail deferred more than 15
+
+input:
+  - hostip
+  - mndeferred
+
+output:
+  - stdout: <% ctx(stdout) %>
+
+tasks:
+  status:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Average mail deferred on <% ctx().hostip %> is <% ctx().mndeferred %> messages.
+        Do you want to delete it?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+  
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: Do you want remove the deferred messages?
+            required: true
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: remove
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, automation stopped"
+
+  remove:
+    action: core.remote_sudo
+    input:
+      cmd: /opt/zimbra/common/sbin/postsuper -d ALL deferred
+      hosts: <% ctx().hostip %>
+    next:
+      - when: <% succeeded %>
+        do: finish
+        publish:
+          - stdout: <% result().get(ctx().hostip).stdout %>
+  
+  finish:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Result: Delete deferred mail successful 
+        <% ctx().stdout %>

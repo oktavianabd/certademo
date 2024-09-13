@@ -1,0 +1,91 @@
+version: 1.0
+
+description: A basic workflow that demonstrates inquiry.
+
+tasks:
+  start:
+    action: core.echo message="Automation started."
+    next:
+      - when: <% succeeded() %>
+        do: 
+         - get_approval
+        #  - post_approval
+  
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: |
+              Continue?
+            # <% task().web_url %>
+            # <% task().id %>
+            # <% task(get_approval).task_execution_id %>
+            # <% task(get_approval).workflow_execution_id %>
+            # <% task(get_approval).task_name %>
+            # <% task(get_approval).task_id %>
+            required: True
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: finish
+        publish:
+          # - web_url: <% task().web_url %>
+          # - id: <% task().id %>
+          - task_execution_id: '<% task().task_execution_id %>'
+          - workflow_execution_id: '<% task().workflow_execution_id %>'
+          - task_name: '<% task().task_name %>'
+          - execution_id: '<% ctx(st2).action_execution_id %>'
+          - api_url: '<% ctx(st2).api_url %>'
+          # - task_name: <% task(get_approval).task_name %>
+          # - task_id: <% task(get_approval).task_id %>
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+  
+  # post_approval:
+  #   action: core.echo 
+  #   input:
+  #     message: |
+  #       Hello
+  #       <% ctx().task_execution_id %>
+  #       <% ctx().workflow_execution_id %>
+  finish:
+    action: core.echo
+    input:
+      message: |
+        Approved, Automation completed
+
+        get_approval task
+        <% ctx().execution_id %>
+        <% ctx().api_url %>
+        <% ctx().task_execution_id %>
+        <% ctx().workflow_execution_id %>        
+        <% ctx().task_name %>
+
+        start task
+        <% task("start").task_execution_id %>
+        <% task("start").workflow_execution_id %>
+        <% task("start").task_name %>
+        <% task("start").task_id %>
+        <% task("start").route %>
+        <% task("start").result %>
+        <% task("start").status %>
+        <% task("start").start_timestamp %>
+        <% task("start").end_timestamp %>
+      # <% ctx().task_execution_id %>
+      # <% ctx().workflow_execution_id %>
+      # <% ctx().task_name %>
+      # <% ctx().task_id %>
+
+       # <% st2kv('task("get_approval").task_execution_id', decrypt=>true) %> 
+       # <% task("get_approval").action_execution_id %>
+
+
+
+  stop:
+    action: core.echo message="Un-approved, Automation stopped."
+output:
+ - task_execution_id: '<% ctx("task_execution_id") %>'
+ - workflow_execution_id : '<% ctx("workflow_execution_id") %>'

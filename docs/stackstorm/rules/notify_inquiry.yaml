@@ -1,0 +1,14 @@
+---
+name: "notify_inquiry"
+pack: "certademo"
+description: notify relevant user of an inquiry action
+enabled: true
+
+trigger:
+  type: core.st2.generic.inquiry
+
+action:
+  ref: chatops.post_message
+  parameters:
+    channel: "stackstorm-demo"
+    message: 'Inquiry {{trigger.id}} is waiting for an approval action'

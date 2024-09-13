@@ -1,0 +1,24 @@
+---
+name: "mail_deferred"
+pack: "certademo"
+description: "mail deferred"
+enabled: false
+
+trigger:
+  type: "core.st2.webhook"
+  parameters:
+    url: "certademo"
+
+criteria:
+  trigger.body.alerts[0].labels.alertname:
+    pattern: "MailDeferred"
+    type: "equals"
+  trigger.body.alerts[0].status:
+    pattern: "firing"
+    type: "equals"
+
+action:
+  ref: "certademo.mail_deferred"
+  parameters:
+    hostip: "{{trigger.body.alerts[0].labels.host}}"
+    mndeferred: "{{trigger.body.alerts[0].labels.deferred_values}}"

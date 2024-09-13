@@ -1,0 +1,88 @@
+---
+version: 1.0
+name: "ssl_expiry"
+description: handle when ssl certificate of webserver has been expired
+
+input:
+  - instance
+  
+tasks:
+  checkssl:
+    action: core.remote_sudo
+    input:
+      cmd: echo | openssl s_client -servername <% ctx().instance %> -connect <% ctx().instance %>:443 2>/dev/null | openssl x509 -noout -dates
+      hosts: <% ctx().instance %>
+    next:
+      - when: <% succeeded %>
+        do: notify
+        publish:
+          - stdout: <% result().get(ctx().instance).stdout %>
+
+  notify:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Alert: SSL certificate on <% ctx().instance %> expiry less than 7 days
+        <% ctx().stdout %>
+        Do you want to renew it for 1 years?
+    next:
+      - when: <% succeeded %>
+        do: get_approval
+  
+  get_approval:
+    action: core.ask
+    input:
+      schema:
+        type: object
+        properties:
+          approved:
+            type: boolean
+            description: Do you want to continue to renew the certificate for 1 year?
+            required: True
+
+    next:
+      - when: <% succeeded and task(get_approval).result.response.approved = true %>
+        do: renew
+      - when: <% succeeded and task(get_approval).result.response.approved = false %>
+        do: stop
+  
+  stop:
+    action: chatops.post_message channel="stackstorm-demo" message="Un-approved, automation stopped."
+  
+  renew:
+    action: core.remote_sudo
+    input:
+      cmd: openssl x509 -in /etc/pki/tls/certs/certademo.csr -out /etc/pki/tls/certs/certademo.crt -req -signkey /etc/pki/tls/certs/certademo.key -days 365
+      hosts: <% ctx().instance %>
+    next: 
+      - when: <% succeeded() %>
+        do: reload_http
+  
+  reload_http:
+    action: core.remote_sudo
+    input:
+      cmd: systemctl reload httpd
+      hosts: <% ctx().instance %>
+    next:
+      - when: <% succeeded() %>
+        do: checkssl_2
+  
+  checkssl_2:
+    action: core.remote_sudo
+    input:
+      cmd: echo | openssl s_client -servername <% ctx().instance %> -connect <% ctx().instance %>:443 2>/dev/null | openssl x509 -noout -dates
+      hosts: <% ctx().instance %>
+    next:
+      - when: <% succeeded %>
+        do: notify_2
+        publish:
+          - stdout_renew: <% result().get(ctx().instance).stdout %>
+
+  notify_2:
+    action: chatops.post_message
+    input:
+      channel: stackstorm-demo
+      message: |
+        Result: SSL certificate on <% ctx().instance %> renew around 1 years
+        <% ctx().stdout_renew %>

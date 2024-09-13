@@ -1,0 +1,35 @@
+---
+name: "newticket_jirav2"
+pack: "certademo"
+description: "handle if there is new ticket created from jira API v2"
+enabled: true
+
+trigger:
+  type: "jira.issues_tracker_for_apiv2"
+
+criteria:
+  trigger.fields.customfield_10010.requestType.name:
+    type: "contains"
+    pattern: "Request a new account"
+
+action:
+  ref: "certademo.newticket_jirav2"
+  parameters:
+    issue_key: "{{trigger.issue_key}}"
+    summary: "{{trigger.fields.summary}}"
+    description: "{{trigger.fields.description}}"
+    username: "{{trigger.fields.customfield_10064}}"
+
+  # ref: "chatops.post_message"
+  # parameters:
+  #   channel: "stackstorm-demo"
+  #   message: |
+  #     Hello, receive new ticket from Jira
+  #     Trigger ticket key: {{trigger.issue_key}}
+  #     Status : {{trigger.fields.status.name}}
+  #     Trigger url: {{trigger.issue_url}}
+  #     Browse url: {{trigger.issue_browse_url}}
+  #     Ticket Type: {{trigger.fields.issuetype.name}}
+  #     Ticket Type description: {{trigger.fields.issuetype.description}}
+  #     Ticket Summary: {{trigger.fields.summary}}
+  #     Ticket description: {{trigger.fields.description}}

@@ -1,0 +1,16 @@
+---
+name: "mail_deferred"
+pack: "certademo"
+description: "handle mail deferred"
+runner_type: "orquesta"
+entry_point: "workflows/mail_deferred.yaml"
+enabled: true
+
+parameters:
+  hostip:
+    type: "string"
+    description: "host ip"
+    required: true
+  mndeferred:
+    type: "string"
+    description: " median value of deferred emails "
